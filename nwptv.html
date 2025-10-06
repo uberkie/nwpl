@@ -19,66 +19,94 @@
         }
 
         body, html {
-            margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif;
-            background-color: var(--bg-color); color: var(--font-color);
-            height: 100vh; width: 100vw; overflow: hidden;
-            display: flex; flex-direction: column;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--font-color);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        .header { 
-            background-color: var(--primary-color); 
-            padding: 10px 20px; 
-            border-bottom: 2px solid var(--border-color); 
-            text-align: center; 
-            font-size: 1.5em; 
-            font-weight: bold; 
-            color: var(--accent-color); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
+        .header {
+            background-color: var(--primary-color);
+            padding: 10px 20px;
+            border-bottom: 2px solid var(--border-color);
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        
+
         .header img {
-            height: 40px; 
+            height: 40px;
             margin-right: 15px;
         }
-        
-        .main-container { display: flex; flex: 1; overflow: hidden; }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
 
         /* Toolbar */
-        .toolbar { 
-            width: 250px; 
-            background-color: var(--primary-color); 
-            padding: 15px; 
-            border-right: 2px solid var(--border-color); 
-            display: flex; 
-            flex-direction: column; 
-            gap: 10px; 
-            overflow-y: auto; 
+        .toolbar {
+            width: 250px;
+            background-color: var(--primary-color);
+            padding: 15px;
+            border-right: 2px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
         }
-        .toolbar h3 { 
-            margin-top: 0; 
-            border-bottom: 1px solid var(--border-color); 
-            padding-bottom: 10px; 
-            color: var(--font-color); 
+
+        .toolbar h3 {
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            color: var(--font-color);
         }
-        .toolbar-button { 
-            padding: 10px; 
-            background-color: var(--secondary-color); 
-            color: var(--font-color); 
-            border: 1px solid var(--border-color); 
-            border-radius: 5px; 
-            cursor: pointer; 
-            text-align: left; 
-            transition: all 0.2s; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
+
+        .toolbar-button {
+            padding: 10px;
+            background-color: var(--secondary-color);
+            color: var(--font-color);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .toolbar-button .device-icon { width: 24px; height: 24px; fill: var(--font-color); }
-        .toolbar-button:hover { background-color: var(--accent-color); color: var(--bg-color); font-weight: bold; }
-        .toolbar-button:hover .device-icon { fill: var(--bg-color); }
-        .toolbar-button.active { background-color: var(--danger-color); }
+
+        .toolbar-button .device-icon {
+            width: 24px;
+            height: 24px;
+            fill: var(--font-color);
+        }
+
+        .toolbar-button:hover {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            font-weight: bold;
+        }
+
+        .toolbar-button:hover .device-icon {
+            fill: var(--bg-color);
+        }
+
+        .toolbar-button.active {
+            background-color: var(--danger-color);
+        }
 
         /* Device Catalogue */
         .device-catalogue summary {
@@ -89,7 +117,11 @@
             border-radius: 4px;
             transition: background-color 0.2s;
         }
-        .device-catalogue summary:hover { background-color: var(--secondary-color); }
+
+        .device-catalogue summary:hover {
+            background-color: var(--secondary-color);
+        }
+
         .catalogue-item {
             display: flex;
             flex-direction: column;
@@ -100,15 +132,18 @@
             border-radius: 4px;
             background-color: var(--secondary-color);
         }
+
         .catalogue-item p {
             font-size: 0.8em;
             margin: 0;
             line-height: 1.2;
         }
+
         .catalogue-item .controls {
             display: flex;
             gap: 5px;
         }
+
         .catalogue-item input[type="text"] {
             flex-grow: 1;
             padding: 4px;
@@ -118,6 +153,7 @@
             border-radius: 3px;
             font-size: 0.8em;
         }
+
         .catalogue-item .add-device-btn {
             padding: 4px 8px;
             background-color: var(--accent-color);
@@ -130,16 +166,17 @@
 
 
         /* Filter Controls */
-        .filter-group { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 5px; 
-            margin-bottom: 15px; 
-            padding: 5px; 
-            border: 1px solid var(--border-color); 
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 15px;
+            padding: 5px;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
             font-size: 0.9em;
         }
+
         .filter-group label {
             display: flex;
             align-items: center;
@@ -149,7 +186,8 @@
 
         /* Canvas */
         #canvas {
-            flex-grow: 1; position: relative;
+            flex-grow: 1;
+            position: relative;
             background-color: var(--bg-color);
             background-image: linear-gradient(var(--border-color) 1px, transparent 1px), linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
             background-size: 25px 25px;
@@ -157,99 +195,289 @@
         }
 
         .device {
-            position: absolute; width: 70px; height: 70px; border-radius: 8px;
-            background-color: var(--secondary-color); border: 2px solid var(--border-color);
-            cursor: grab; display: flex; flex-direction: column; align-items: center;
-            justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.3); padding-top: 5px;
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            background-color: var(--secondary-color);
+            border: 2px solid var(--border-color);
+            cursor: grab;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            padding-top: 5px;
             transition: opacity 0.3s, border-color 0.1s;
         }
-        .device.hidden { opacity: 0.1; pointer-events: none; }
-        .device.selected { border-color: var(--accent-color); box-shadow: 0 0 15px var(--accent-color); }
-        .device-icon { width: 32px; height: 32px; fill: var(--font-color); }
-        .device-custom-image { width: 45px; height: 45px; object-fit: contain; }
-        .device-label { font-size: 10px; margin-top: 5px; background: rgba(0,0,0,0.5); padding: 2px 4px; border-radius: 3px; white-space: nowrap; }
+
+        .device.hidden {
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .device.selected {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px var(--accent-color);
+        }
+
+        .device-icon {
+            width: 32px;
+            height: 32px;
+            fill: var(--font-color);
+        }
+
+        .device-custom-image {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+
+        .device-label {
+            font-size: 10px;
+            margin-top: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 4px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
 
         /* Visual Ports */
         .device-ports-container {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr);
-            padding: 2px; box-sizing: border-box;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            padding: 2px;
+            box-sizing: border-box;
         }
+
         .visual-port {
-            width: 16px; height: 16px; background-color: var(--accent-color); color: var(--bg-color);
-            border-radius: 50%; font-size: 10px; font-weight: bold;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 5px black; cursor: help;
+            width: 16px;
+            height: 16px;
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            border-radius: 50%;
+            font-size: 10px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 5px black;
+            cursor: help;
             transition: all 0.2s;
-            opacity: 0; pointer-events: none;
+            opacity: 0;
+            pointer-events: none;
         }
+
         /* Make ports visible and interactive on selected device OR during linking */
         .device.selected .visual-port,
-        body.linking-active .device .visual-port { opacity: 1; pointer-events: auto; cursor: crosshair; }
-        body.linking-active .device .visual-port:hover { transform: scale(1.3); background-color: white; }
+        body.linking-active .device .visual-port {
+            opacity: 1;
+            pointer-events: auto;
+            cursor: crosshair;
+        }
+
+        body.linking-active .device .visual-port:hover {
+            transform: scale(1.3);
+            background-color: white;
+        }
 
         /* Properties Panel */
-        #properties-panel { 
-            width: 300px; 
-            background-color: var(--primary-color); 
-            padding: 15px; 
-            border-left: 2px solid var(--border-color); 
-            overflow-y: auto; 
-            transition: width 0.3s; 
+        #properties-panel {
+            width: 300px;
+            background-color: var(--primary-color);
+            padding: 15px;
+            border-left: 2px solid var(--border-color);
+            overflow-y: auto;
+            transition: width 0.3s;
         }
-        #properties-panel.hidden { width: 0; padding: 0; overflow: hidden; }
-        .prop-group { margin-bottom: 20px; }
-        .prop-group label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--accent-color); }
-        .prop-group input[type="text"], .prop-group input[type="color"], .prop-group textarea, .modal-content select, .prop-group input[type="number"] { 
-            width: 100%; 
-            padding: 8px; 
-            background-color: var(--secondary-color); 
-            border: 1px solid var(--border-color); 
-            color: var(--font-color); 
-            border-radius: 4px; 
-            box-sizing: border-box; 
+
+        #properties-panel.hidden {
+            width: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .prop-group {
+            margin-bottom: 20px;
+        }
+
+        .prop-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .prop-group input[type="text"], .prop-group input[type="color"], .prop-group textarea, .modal-content select, .prop-group input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            background-color: var(--secondary-color);
+            border: 1px solid var(--border-color);
+            color: var(--font-color);
+            border-radius: 4px;
+            box-sizing: border-box;
             resize: vertical;
         }
-        .prop-group input[type="color"] { height: 40px; padding: 2px; }
-        .prop-button { padding: 8px 12px; background-color: var(--accent-color); color: #000; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; margin-top: 5px; margin-right: 5px; }
-        .prop-button.danger { background-color: var(--danger-color); color: #fff; }
-        .prop-button.info { background-color: var(--info-color); color: #000; }
-        .prop-button.small { padding: 4px 8px; font-size: 0.8em; }
 
-        .port-item, .bridge-item, .service-item { 
-            background: var(--secondary-color); 
-            padding: 10px; 
-            margin-bottom: 5px; 
-            border-radius: 4px; 
+        .prop-group input[type="color"] {
+            height: 40px;
+            padding: 2px;
         }
-        .port-header, .bridge-header, .service-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .port-details, .bridge-details, .service-details { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border-color); }
-        .port-item.expanded .port-details, .bridge-item.expanded .bridge-details, .service-item.expanded .service-details { display: block; }
-        
-        .detail-item { 
-            font-size: 12px; 
-            background: var(--bg-color); 
-            border: 1px solid var(--border-color); 
-            padding: 3px 6px; 
-            border-radius: 10px; 
-            margin: 2px; 
-            display: inline-block; 
-        }
-        .detail-item.ip { border-color: var(--accent-color); }
-        .detail-item.vlan { border-color: var(--info-color); }
-        .detail-item button { margin-left: 5px; padding: 0 4px; background: var(--danger-color); color: white; border: none; border-radius: 50%; cursor: pointer; font-size: 10px; line-height: 1; }
 
-        .link-info { font-size: 0.9em; margin-top: 5px; padding: 8px; background-color: var(--secondary-color); border-radius: 4px; }
-        
+        .prop-button {
+            padding: 8px 12px;
+            background-color: var(--accent-color);
+            color: #000;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 5px;
+            margin-right: 5px;
+        }
+
+        .prop-button.danger {
+            background-color: var(--danger-color);
+            color: #fff;
+        }
+
+        .prop-button.info {
+            background-color: var(--info-color);
+            color: #000;
+        }
+
+        .prop-button.small {
+            padding: 4px 8px;
+            font-size: 0.8em;
+        }
+
+        .port-item, .bridge-item, .service-item {
+            background: var(--secondary-color);
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
+
+        .port-header, .bridge-header, .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .port-details, .bridge-details, .service-details {
+            display: none;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .port-item.expanded .port-details, .bridge-item.expanded .bridge-details, .service-item.expanded .service-details {
+            display: block;
+        }
+
+        .detail-item {
+            font-size: 12px;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 3px 6px;
+            border-radius: 10px;
+            margin: 2px;
+            display: inline-block;
+        }
+
+        .detail-item.ip {
+            border-color: var(--accent-color);
+        }
+
+        .detail-item.vlan {
+            border-color: var(--info-color);
+        }
+
+        .detail-item button {
+            margin-left: 5px;
+            padding: 0 4px;
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 10px;
+            line-height: 1;
+        }
+
+        .link-info {
+            font-size: 0.9em;
+            margin-top: 5px;
+            padding: 8px;
+            background-color: var(--secondary-color);
+            border-radius: 4px;
+        }
+
         /* Modal & Links */
-        .modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 1000; display: flex; justify-content: center; align-items: center; }
-        .modal-content { background-color: var(--primary-color); padding: 20px; border-radius: 8px; width: 300px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        #link-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-        .link-path { fill: none; pointer-events: stroke; cursor: pointer; transition: stroke-width 0.2s; }
-        .link-path.hidden { opacity: 0; pointer-events: none; }
-        .link-path.selected { stroke-width: 8 !important; } /* Use important to override specific stroke-width */
-        .link-label { fill: var(--font-color); font-size: 11px; text-anchor: middle; pointer-events: none; }
-        .link-label.hidden { display: none; }
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--primary-color);
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        #link-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .link-path {
+            fill: none;
+            pointer-events: stroke;
+            cursor: pointer;
+            transition: stroke-width 0.2s;
+        }
+
+        .link-path.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .link-path.selected {
+            stroke-width: 8 !important;
+        }
+
+        /* Use important to override specific stroke-width */
+        .link-label {
+            fill: var(--font-color);
+            font-size: 11px;
+            text-anchor: middle;
+            pointer-events: none;
+        }
+
+        .link-label.hidden {
+            display: none;
+        }
 
         /* --- Tooltip (Hover Popup) Styling --- */
         #tooltip {
@@ -266,127 +494,404 @@
             max-width: 250px;
             font-size: 0.85em;
             line-height: 1.4;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
         }
-        #tooltip strong { color: var(--accent-color); display: block; margin-top: 3px; }
-        #tooltip .detail { margin-top: 5px; border-top: 1px solid #444; padding-top: 5px; }
-        #tooltip .ip-tag { background-color: #333; padding: 1px 4px; border-radius: 3px; font-family: monospace; }
-        .vlan-ip-section { padding-left: 15px; border-left: 2px solid var(--info-color); margin-top: 5px; }
+
+        #tooltip strong {
+            color: var(--accent-color);
+            display: block;
+            margin-top: 3px;
+        }
+
+        #tooltip .detail {
+            margin-top: 5px;
+            border-top: 1px solid #444;
+            padding-top: 5px;
+        }
+
+        #tooltip .ip-tag {
+            background-color: #333;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        .vlan-ip-section {
+            padding-left: 15px;
+            border-left: 2px solid var(--info-color);
+            margin-top: 5px;
+        }
 
     </style>
 </head>
 <body>
-    <div id="svg-icons" style="display: none;">
-        <svg id="icon-Router" viewBox="0 0 24 24"><path d="M12,4c-4.41,0-8,1.79-8,4s3.59,4,8,4s8-1.79,8-4S16.41,4,12,4z M2,10v6c0,2.21,1.79,4,4,4h12c2.21,0,4-1.79,4-4v-6 c-1.66,0-3,1.34-3,3s1.34,3,3,3v2c0,1.1-0.9,2-2,2H6c-1.1,0-2-0.9-2-2v-2c1.66,0,3-1.34,3-3s-1.34-3-3-3z M12,8c1.1,0,2,0.9,2,2s-0.9,2-2,2s-2-0.9-2-2S10.9,8,12,8z"></path></svg>
-        <svg id="icon-Switch" viewBox="0 0 24 24"><path d="M21,13H3c-1.1,0-2,0.9-2,2v4c0,1.1,0.9,2,2,2h18c1.1,0,2-0.9,2-2v-4C23,13.9,22.1,13,21,13z M3,7h18c1.1,0,2-0.9,2-2V3c0-1.1-0.9-2-2-2H3C1.9,1,1,1.9,1,3v4c0,1.1,0.9,2,2,2z M5,5h2v2H5V5z M9,5h2v2H9V5z M13,5h2v2h-2V5z M17,5h2v2h-2V5z M5,15h2v2H5V15z M9,15h2v2H9V15z M13,15h2v2h-2V15z M17,15h2v2h-2V15z"></path></svg>
-        <svg id="icon-Firewall" viewBox="0 0 24 24"><path d="M16,11v-1c0-1.1-0.9-2-2-2h-4c-1.1,0-2,0.9-2,2v1H4V8c0-1.1,0.9-2,2-2h12c1.1,0,2,0.9,2,2v3H16z M20,13v3c0,1.1-0.9,2-2,2H6 c-1.1,0-2-0.9-2-2v-3H2v5c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2v-5H20z M12,14c-1.1,0-2,0.9-2,2s0.9,2,2,2s2-0.9,2-2S13.1,14,12,14z"></path></svg>
-        <svg id="icon-Server" viewBox="0 0 24 24"><path d="M20,3H4C2.9,3,2,3.9,2,5v2c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V5C22,3.9,21.1,3,20,3z M20,13H4c-1.1,0-2,0.9-2,2v2 c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2v-2C22,13.9,21.1,13,20,13z M7,17H5v-2h2V17z M7,7H5V5h2V7z M19,17h-2v-2h2V17z M19,7h-2V5h2V7z"></path></svg>
-        <svg id="icon-AP" viewBox="0 0 24 24"><path d="M12,4c-3.31,0-6,2.69-6,6v4c0,1.1,0.9,2,2,2h8c1.1,0,2-0.9,2-2v-4C18,6.69,15.31,4,12,4z M12,14h-2v-4h4v4h-2z M12,2c-5.52,0-10,4.48-10,10s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z"></path></svg>
-        <svg id="icon-ONT" viewBox="0 0 24 24"><path d="M12,3L2,12h3v8h14v-8h3L12,3z M17,18h-2v-6h-6v6H7v-7.81l5-4.5l5,4.5V18z"></path></svg>
-        <svg id="icon-Fibre" viewBox="0 0 24 24"><path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M10.2,16.5l-3.9-3.9c-0.39-0.39-0.39-1.02,0-1.41l0,0 c0.39-0.39,1.02-0.39,1.41,0L11,14.08V5c0-0.55,0.45-1,1-1s1,0.45,1,1v9.08l2.28-2.28c0.39-0.39,1.02-0.39,1.41,0l0,0 c0.39,0.39,0.39,1.02,0,1.41l-3.9,3.9C11.22,16.89,10.59,16.89,10.2,16.5z"></path></svg>
-        <svg id="icon-NVR" viewBox="0 0 24 24"><path d="M20 3H4c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 4H5V5h14v2zm1 10H4c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-2c0-1.1-.9-2-2-2zm-1 4H5v-2h14v2zM12 11c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"></path></svg>
-        <svg id="icon-DVR" viewBox="0 0 24 24"><path d="M20 3H4c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 4H5V5h14v2zM2 13h20v6c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-6zm5 5h2v-2H7v2zm4 0h2v-2h-2v2zm4 0h2v-2h-2v2z"></path></svg>
-    </div>
+<div id="svg-icons" style="display: none;">
+    <svg id="icon-Router" viewBox="0 0 24 24">
+        <path d="M12,4c-4.41,0-8,1.79-8,4s3.59,4,8,4s8-1.79,8-4S16.41,4,12,4z M2,10v6c0,2.21,1.79,4,4,4h12c2.21,0,4-1.79,4-4v-6 c-1.66,0-3,1.34-3,3s1.34,3,3,3v2c0,1.1-0.9,2-2,2H6c-1.1,0-2-0.9-2-2v-2c1.66,0,3-1.34,3-3s-1.34-3-3-3z M12,8c1.1,0,2,0.9,2,2s-0.9,2-2,2s-2-0.9-2-2S10.9,8,12,8z"></path>
+    </svg>
+    <svg id="icon-Switch" viewBox="0 0 24 24">
+        <path d="M21,13H3c-1.1,0-2,0.9-2,2v4c0,1.1,0.9,2,2,2h18c1.1,0,2-0.9,2-2v-4C23,13.9,22.1,13,21,13z M3,7h18c1.1,0,2-0.9,2-2V3c0-1.1-0.9-2-2-2H3C1.9,1,1,1.9,1,3v4c0,1.1,0.9,2,2,2z M5,5h2v2H5V5z M9,5h2v2H9V5z M13,5h2v2h-2V5z M17,5h2v2h-2V5z M5,15h2v2H5V15z M9,15h2v2H9V15z M13,15h2v2h-2V15z M17,15h2v2h-2V15z"></path>
+    </svg>
+    <svg id="icon-Firewall" viewBox="0 0 24 24">
+        <path d="M16,11v-1c0-1.1-0.9-2-2-2h-4c-1.1,0-2,0.9-2,2v1H4V8c0-1.1,0.9-2,2-2h12c1.1,0,2,0.9,2,2v3H16z M20,13v3c0,1.1-0.9,2-2,2H6 c-1.1,0-2-0.9-2-2v-3H2v5c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2v-5H20z M12,14c-1.1,0-2,0.9-2,2s0.9,2,2,2s2-0.9,2-2S13.1,14,12,14z"></path>
+    </svg>
+    <svg id="icon-Server" viewBox="0 0 24 24">
+        <path d="M20,3H4C2.9,3,2,3.9,2,5v2c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V5C22,3.9,21.1,3,20,3z M20,13H4c-1.1,0-2,0.9-2,2v2 c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2v-2C22,13.9,21.1,13,20,13z M7,17H5v-2h2V17z M7,7H5V5h2V7z M19,17h-2v-2h2V17z M19,7h-2V5h2V7z"></path>
+    </svg>
+    <svg id="icon-AP" viewBox="0 0 24 24">
+        <path d="M12,4c-3.31,0-6,2.69-6,6v4c0,1.1,0.9,2,2,2h8c1.1,0,2-0.9,2-2v-4C18,6.69,15.31,4,12,4z M12,14h-2v-4h4v4h-2z M12,2c-5.52,0-10,4.48-10,10s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z"></path>
+    </svg>
+    <svg id="icon-ONT" viewBox="0 0 24 24">
+        <path d="M12,3L2,12h3v8h14v-8h3L12,3z M17,18h-2v-6h-6v6H7v-7.81l5-4.5l5,4.5V18z"></path>
+    </svg>
+    <svg id="icon-Fibre" viewBox="0 0 24 24">
+        <path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M10.2,16.5l-3.9-3.9c-0.39-0.39-0.39-1.02,0-1.41l0,0 c0.39-0.39,1.02-0.39,1.41,0L11,14.08V5c0-0.55,0.45-1,1-1s1,0.45,1,1v9.08l2.28-2.28c0.39-0.39,1.02-0.39,1.41,0l0,0 c0.39,0.39,0.39,1.02,0,1.41l-3.9,3.9C11.22,16.89,10.59,16.89,10.2,16.5z"></path>
+    </svg>
+    <svg id="icon-NVR" viewBox="0 0 24 24">
+        <path d="M20 3H4c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 4H5V5h14v2zm1 10H4c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-2c0-1.1-.9-2-2-2zm-1 4H5v-2h14v2zM12 11c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"></path>
+    </svg>
+    <svg id="icon-DVR" viewBox="0 0 24 24">
+        <path d="M20 3H4c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 4H5V5h14v2zM2 13h20v6c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-6zm5 5h2v-2H7v2zm4 0h2v-2h-2v2zm4 0h2v-2h-2v2z"></path>
+    </svg>
+</div>
 
-    <div class="header">
-        <img src="https://placehold.co/100x40/000000/99cc00?text=Logo" alt="Next Level Networks Logo">
-        Next Level Networks - Network Planning Tool
-    </div>
+<div class="header">
+    <img src="https://placehold.co/100x40/000000/99cc00?text=Logo" alt="Next Level Networks Logo">
+    Next Level Networks - Network Planning Tool
+</div>
 
-    <div class="main-container">
-        <div class="toolbar">
-            <h3>Device Catalogue</h3>
-            <div class="device-catalogue">
-                <details open>
-                    <summary>Routers</summary>
-                    <div class="catalogue-item" data-type="Router" data-model="MikroTik hEX 5 Port Gigabit Desktop Router | E50UG" data-ports="5"><p>MikroTik hEX 5 Port</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="Router" data-model="MikroTik hEX S 5 Port Gigabit 1x 2.5G SFP Desktop Router | E60iUGS" data-ports="6"><p>MikroTik hEX S 6 Port</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="Router" data-model="MikroTik 10 Port Gigabit 1SFP+ 4 Core L5 Rack-Mount Router | RB4011iGS+RM" data-ports="11"><p>MikroTik RB4011 11 Port</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="Router" data-model="MikroTik 8 Gigabit 1x2.5Gbps SFP Dual Core Router | L009UiGS-RM" data-ports="9"><p>MikroTik L009 9 Port</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                </details>
-                <details>
-                    <summary>Switches</summary>
-                    <div class="catalogue-item" data-type="Switch" data-model="MikroTik Cloud Router Switch 8 Port PoE 4SFP | CRS112-8P-4S-IN" data-ports="12"><p>MikroTik CRS112 12 Port</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="Switch" data-model="MikroTik SwOS Cloud Smart Switch 24 Port Gigabit 2SFP+ | CSS326-24G-2S+RM" data-ports="26"><p>MikroTik CSS326 26 Port</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="Switch" data-model="MikroTik Cloud Router Switch 24 Port Gigabit 2SFP+ | CRS326-24G-2S+RM" data-ports="26"><p>MikroTik CRS326 26 Port</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="Switch" data-model="MikroTik Cloud Router Switch 24 Port PoE 450W 4SFP+| CRS328-24P-4S+RM" data-ports="28"><p>MikroTik CRS328 28 Port</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="Switch" data-model="Netgear GS724PTT with 26 Ports" data-ports="26"><p>Netgear GS724PTT 26 Port</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                </details>
-                <details>
-                    <summary>Access Points</summary>
-                    <div class="catalogue-item" data-type="AP" data-model="MikroTik NetMetal 5SHP AC 1SFP Outdoor WiFi Router | RB922UAGS-5HPacD-NM" data-ports="3"><p>MikroTik NetMetal 5SHP</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="AP" data-model="MikroTik OmniTIK 5ac 7.5dBi PoE Outdoor WiFi Omni AP | RBOmniTikPG-5HacD" data-ports="8"><p>MikroTik OmniTIK 5ac</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="AP" data-model="MikroTik LHG 60GHz PtP CPE | RBLHGG-60ad" data-ports="2"><p>MikroTik LHG 60GHz</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="AP" data-model="MikroTik LHG 5  24.5 PtP CPE | RBLHG5" data-ports="2"><p>MikroTik LHG 5</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="AP" data-model="MikroTik LHG XL HP5 27dBi PtP  | RBLHG-5HPnD-XL" data-ports="2"><p>MikroTik LHG XL HP5</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="AP" data-model="MikroTik SXTsq 5 ac 16dBi Dual Chain Outdoor CPE | RBSXTsqG-5acD" data-ports="2"><p>MikroTik SXTsq 5 ac</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="AP" data-model="Ubiquiti UISP airMAX Loco AC 5GHz 13dBi Radio | LOCO5AC" data-ports="2"><p>Ubiquiti Loco AC 5GHz</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="AP" data-model="Ubiquiti UISP airMAX PowerBeam AC 5GHz 25dBi Radio | PBE-5AC-Gen2" data-ports="2"><p>Ubiquiti PowerBeam AC</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                </details>
-                <details>
-                    <summary>Servers</summary>
-                    <div class="catalogue-item" data-type="Server" data-model="Dell Poweredge R320" data-ports="5"><p>Dell Poweredge R320</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="Server" data-model="Dell Poweredge R710" data-ports="5"><p>Dell Poweredge R710</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="Server" data-model="Dell Poweredge R720" data-ports="5"><p>Dell Poweredge R720</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="Server" data-model="Dell Poweredge R580" data-ports="5"><p>Dell Poweredge R580</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="Server" data-model="HP Proliant DL380 Gen 8" data-ports="5"><p>HP Proliant DL380 G8</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="Server" data-model="Supermicro NAS" data-ports="3"><p>Supermicro NAS</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                </details>
-                <details>
-                     <summary>Recorders</summary>
-                     <div class="catalogue-item" data-type="NVR" data-model="Hikvision DS-7608NXI-I2/8P/S" data-ports="1"><p>Hikvision NVR 7608</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                     <div class="catalogue-item" data-type="NVR" data-model="Hikvision DS-7616NXI-I2/16P/S" data-ports="1"><p>Hikvision NVR 7616</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                     <div class="catalogue-item" data-type="NVR" data-model="Dahua DHI-NVR4116HS-8P-4KS3" data-ports="1"><p>Dahua NVR 4116</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                     <div class="catalogue-item" data-type="DVR" data-model="Hikvision iDS-7116HQHI-M1/T" data-ports="1"><p>Hikvision DVR 7116</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                     <div class="catalogue-item" data-type="DVR" data-model="Hikvision iDS-7108HQHI-M1/T" data-ports="1"><p>Hikvision DVR 7108</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                </details>
-                <details>
-                    <summary>Other</summary>
-                    <div class="catalogue-item" data-type="Firewall" data-model="Fortinet Fortigate" data-ports="4"><p>Fortinet Fortigate</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="ONT" data-model="Calix Gigabit ONT" data-ports="1"><p>Calix Gigabit ONT</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="ONT" data-model="Cisco ONT" data-ports="8"><p>Cisco ONT</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                    <div class="catalogue-item" data-type="Fibre" data-model="Fibre Splice" data-ports="0"><p>Fibre Splice</p><div class="controls"><input type="text" placeholder="Device Name"><button class="add-device-btn">+</button></div></div>
-                </details>
-            </div>
+<div class="main-container">
+    <div class="toolbar">
+        <h3>Device Catalogue</h3>
+        <div class="device-catalogue">
+            <details open>
+                <summary>Routers</summary>
+                <div class="catalogue-item" data-type="Router"
+                     data-model="MikroTik hEX 5 Port Gigabit Desktop Router | E50UG" data-ports="5"><p>MikroTik hEX 5
+                    Port</p>
+                    <div class="controls">
 
-            <hr>
-
-            <h3>Device Filters</h3>
-            <div id="device-filter-group" class="filter-group">
-            </div>
-
-            <h3>Link Filters</h3>
-            <div id="link-filter-group" class="filter-group">
-                <label><input type="checkbox" data-link-type="Ethernet" checked> Ethernet</label>
-                <label><input type="checkbox" data-link-type="DAC" checked> DAC</label>
-                <label><input type="checkbox" data-link-type="AOC" checked> AOC</label>
-                <label><input type="checkbox" data-link-type="Fibre" checked> Fibre</label>
-                <label><input type="checkbox" data-link-type="Wireless" checked> Wireless</label>
-                <label><input type="checkbox" data-link-type="VPN" checked> VPN</label>
-                <label><input type="checkbox" data-link-type="VLAN" checked> VLAN</label>
-                <label><input type="checkbox" data-link-type="IP-IP Tunnel" checked> IP-IP Tunnel</label>
-                <label><input type="checkbox" data-link-type="IP Sec Tunnel" checked> IP Sec Tunnel</label>
-                <label><input type="checkbox" data-link-type="Routed" checked> Routed</label>
-            </div>
-
-            <h3>Actions</h3>
-            <button id="add-link-btn" class="toolbar-button">🔗 Add Link</button>
-            <button id="export-jpg-btn" class="toolbar-button">🖼️ Export as JPG</button>
-            <button id="export-json-btn" class="toolbar-button">📤 Export Schematic</button>
-            <label for="import-file" id="import-btn" class="toolbar-button">📥 Import Schematic</label>
-            <input type="file" id="import-file" accept=".json" style="display: none;">
-            <button id="new-schematic-btn" class="toolbar-button">📄 New Schematic</button>
+                        <label>
+                            <input type="text" placeholder="Device Name">
+                        </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="Router"
+                     data-model="MikroTik hEX S 5 Port Gigabit 1x 2.5G SFP Desktop Router | E60iUGS" data-ports="6"><p>
+                    MikroTik hEX S 6 Port</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="Router"
+                     data-model="MikroTik 10 Port Gigabit 1SFP+ 4 Core L5 Rack-Mount Router | RB4011iGS+RM"
+                     data-ports="11"><p>MikroTik RB4011 11 Port</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="Router"
+                     data-model="MikroTik 8 Gigabit 1x2.5Gbps SFP Dual Core Router | L009UiGS-RM" data-ports="9"><p>
+                    MikroTik L009 9 Port</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+            </details>
+            <details>
+                <summary>Switches</summary>
+                <div class="catalogue-item" data-type="Switch"
+                     data-model="MikroTik Cloud Router Switch 8 Port PoE 4SFP | CRS112-8P-4S-IN" data-ports="12"><p>
+                    MikroTik CRS112 12 Port</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="Switch"
+                     data-model="MikroTik SwOS Cloud Smart Switch 24 Port Gigabit 2SFP+ | CSS326-24G-2S+RM"
+                     data-ports="26"><p>MikroTik CSS326 26 Port</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="Switch"
+                     data-model="MikroTik Cloud Router Switch 24 Port Gigabit 2SFP+ | CRS326-24G-2S+RM" data-ports="26">
+                    <p>MikroTik CRS326 26 Port</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="Switch"
+                     data-model="MikroTik Cloud Router Switch 24 Port PoE 450W 4SFP+| CRS328-24P-4S+RM" data-ports="28">
+                    <p>MikroTik CRS328 28 Port</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="Switch" data-model="Netgear GS724PTT with 26 Ports"
+                     data-ports="26"><p>Netgear GS724PTT 26 Port</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+            </details>
+            <details>
+                <summary>Access Points</summary>
+                <div class="catalogue-item" data-type="AP"
+                     data-model="MikroTik NetMetal 5SHP AC 1SFP Outdoor WiFi Router | RB922UAGS-5HPacD-NM"
+                     data-ports="3"><p>MikroTik NetMetal 5SHP</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="AP"
+                     data-model="MikroTik OmniTIK 5ac 7.5dBi PoE Outdoor WiFi Omni AP | RBOmniTikPG-5HacD"
+                     data-ports="8"><p>MikroTik OmniTIK 5ac</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="AP" data-model="MikroTik LHG 60GHz PtP CPE | RBLHGG-60ad"
+                     data-ports="2"><p>MikroTik LHG 60GHz</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="AP" data-model="MikroTik LHG 5  24.5 PtP CPE | RBLHG5"
+                     data-ports="2"><p>MikroTik LHG 5</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="AP" data-model="MikroTik LHG XL HP5 27dBi PtP  | RBLHG-5HPnD-XL"
+                     data-ports="2"><p>MikroTik LHG XL HP5</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="AP"
+                     data-model="MikroTik SXTsq 5 ac 16dBi Dual Chain Outdoor CPE | RBSXTsqG-5acD" data-ports="2"><p>
+                    MikroTik SXTsq 5 ac</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="AP"
+                     data-model="Ubiquiti UISP airMAX Loco AC 5GHz 13dBi Radio | LOCO5AC" data-ports="2"><p>Ubiquiti
+                    Loco AC 5GHz</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="AP"
+                     data-model="Ubiquiti UISP airMAX PowerBeam AC 5GHz 25dBi Radio | PBE-5AC-Gen2" data-ports="2"><p>
+                    Ubiquiti PowerBeam AC</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+            </details>
+            <details>
+                <summary>Servers</summary>
+                <div class="catalogue-item" data-type="Server" data-model="Dell Poweredge R320" data-ports="5"><p>Dell
+                    Poweredge R320</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="Server" data-model="Dell Poweredge R710" data-ports="5"><p>Dell
+                    Poweredge R710</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="Server" data-model="Dell Poweredge R720" data-ports="5"><p>Dell
+                    Poweredge R720</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="Server" data-model="Dell Poweredge R580" data-ports="5"><p>Dell
+                    Poweredge R580</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="Server" data-model="HP Proliant DL380 Gen 8" data-ports="5"><p>HP
+                    Proliant DL380 G8</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="Server" data-model="Supermicro NAS" data-ports="3"><p>Supermicro
+                    NAS</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+            </details>
+            <details>
+                <summary>Recorders</summary>
+                <div class="catalogue-item" data-type="NVR" data-model="Hikvision DS-7608NXI-I2/8P/S" data-ports="1"><p>
+                    Hikvision NVR 7608</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="NVR" data-model="Hikvision DS-7616NXI-I2/16P/S" data-ports="1">
+                    <p>Hikvision NVR 7616</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="NVR" data-model="Dahua DHI-NVR4116HS-8P-4KS3" data-ports="1"><p>
+                    Dahua NVR 4116</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="DVR" data-model="Hikvision iDS-7116HQHI-M1/T" data-ports="1"><p>
+                    Hikvision DVR 7116</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="DVR" data-model="Hikvision iDS-7108HQHI-M1/T" data-ports="1"><p>
+                    Hikvision DVR 7108</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+            </details>
+            <details>
+                <summary>Other</summary>
+                <div class="catalogue-item" data-type="Firewall" data-model="Fortinet Fortigate" data-ports="4"><p>
+                    Fortinet Fortigate</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="ONT" data-model="Calix Gigabit ONT" data-ports="1"><p>Calix
+                    Gigabit ONT</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="ONT" data-model="Cisco ONT" data-ports="8"><p>Cisco ONT</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+                <div class="catalogue-item" data-type="Fibre" data-model="Fibre Splice" data-ports="0"><p>Fibre
+                    Splice</p>
+                    <div class="controls"><label>
+                        <input type="text" placeholder="Device Name">
+                    </label>
+                        <button class="add-device-btn">+</button>
+                    </div>
+                </div>
+            </details>
         </div>
 
-        <div id="canvas">
-            <svg id="link-svg"></svg>
-            <div id="tooltip" style="opacity: 0;"></div>
+        <hr>
+
+        <h3>Device Filters</h3>
+        <div id="device-filter-group" class="filter-group">
         </div>
 
-        <div id="properties-panel" class="hidden"></div>
+        <h3>Link Filters</h3>
+        <div id="link-filter-group" class="filter-group">
+            <label><input type="checkbox" data-link-type="Ethernet" checked> Ethernet</label>
+            <label><input type="checkbox" data-link-type="DAC" checked> DAC</label>
+            <label><input type="checkbox" data-link-type="AOC" checked> AOC</label>
+            <label><input type="checkbox" data-link-type="Fibre" checked> Fibre</label>
+            <label><input type="checkbox" data-link-type="Wireless" checked> Wireless</label>
+            <label><input type="checkbox" data-link-type="VPN" checked> VPN</label>
+            <label><input type="checkbox" data-link-type="VLAN" checked> VLAN</label>
+            <label><input type="checkbox" data-link-type="IP-IP Tunnel" checked> IP-IP Tunnel</label>
+            <label><input type="checkbox" data-link-type="IP Sec Tunnel" checked> IP Sec Tunnel</label>
+            <label><input type="checkbox" data-link-type="Routed" checked> Routed</label>
+        </div>
+
+        <h3>Actions</h3>
+        <button id="add-link-btn" class="toolbar-button">🔗 Add Link</button>
+        <button id="export-jpg-btn" class="toolbar-button">🖼️ Export as JPG</button>
+        <button id="export-json-btn" class="toolbar-button">📤 Export Schematic</button>
+        <label for="import-file" id="import-btn" class="toolbar-button">📥 Import Schematic</label>
+        <input type="file" id="import-file" accept=".json" style="display: none;">
+        <button id="new-schematic-btn" class="toolbar-button">📄 New Schematic</button>
     </div>
 
-    <script>
+    <div id="canvas">
+        <svg id="link-svg"></svg>
+        <div id="tooltip" style="opacity: 0;"></div>
+    </div>
+
+    <div id="properties-panel" class="hidden"></div>
+</div>
+
+<script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- Element Selection ---
         const canvas = document.getElementById('canvas');
@@ -400,7 +905,7 @@
         const deviceFilterGroup = document.getElementById('device-filter-group');
         const tooltip = document.getElementById('tooltip');
         const newSchematicBtn = document.getElementById('new-schematic-btn');
-        
+
         // --- State Variables ---
         let devices = [];
         let links = [];
@@ -408,19 +913,19 @@
         let nextDeviceId = 0;
         let nextLinkID = 0;
         let isLinking = false;
-        let linkStartPoint = null; 
+        let linkStartPoint = null;
 
         const linkVisuals = {
-            'Ethernet':      { stroke: '#99cc00', strokeWidth: 6, dash: 'none' },
-            'DAC':           { stroke: '#a3d11a', strokeWidth: 6, dash: '2 10' },
-            'AOC':           { stroke: '#add533', strokeWidth: 6, dash: '15 10' },
-            'Fibre':         { stroke: '#00aaff', strokeWidth: 4, dash: 'wave' },
-            'Wireless':      { stroke: '#fd7e14', strokeWidth: 3, dash: 'wave_alt' },
-            'VPN':           { stroke: '#dc3545', strokeWidth: 2, dash: 'none' },
-            'VLAN':          { stroke: '#28a745', strokeWidth: 2, dash: '2 8' },
-            'IP-IP Tunnel':  { stroke: '#9f59f7', strokeWidth: 2, dash: '10 8' },
-            'IP Sec Tunnel': { stroke: '#b37ff9', strokeWidth: 2, dash: 'wave_alt' },
-            'Routed':        { stroke: '#ffffff', strokeWidth: 2, dash: 'none' }
+            'Ethernet': {stroke: '#99cc00', strokeWidth: 6, dash: 'none'},
+            'DAC': {stroke: '#a3d11a', strokeWidth: 6, dash: '2 10'},
+            'AOC': {stroke: '#add533', strokeWidth: 6, dash: '15 10'},
+            'Fibre': {stroke: '#00aaff', strokeWidth: 4, dash: 'wave'},
+            'Wireless': {stroke: '#fd7e14', strokeWidth: 3, dash: 'wave_alt'},
+            'VPN': {stroke: '#dc3545', strokeWidth: 2, dash: 'none'},
+            'VLAN': {stroke: '#28a745', strokeWidth: 2, dash: '2 8'},
+            'IP-IP Tunnel': {stroke: '#9f59f7', strokeWidth: 2, dash: '10 8'},
+            'IP Sec Tunnel': {stroke: '#b37ff9', strokeWidth: 2, dash: 'wave_alt'},
+            'Routed': {stroke: '#ffffff', strokeWidth: 2, dash: 'none'}
         };
 
         const ipEnabledLinkTypes = ['VPN', 'VLAN', 'IP-IP Tunnel', 'IP Sec Tunnel', 'Routed'];
@@ -430,6 +935,7 @@
         function findDevice(id) {
             return devices.find(d => d.id === id);
         }
+
         function findPort(deviceId, portId) {
             const device = findDevice(deviceId);
             return device ? device.ports.find(p => p.id === portId) : null;
@@ -441,17 +947,17 @@
             const d = Math.sqrt(dx * dx + dy * dy);
             const angle = Math.atan2(dy, dx);
             if (d === 0) return `M ${x1} ${y1}`;
-            
+
             const segments = Math.ceil(d / 10); // Draw segments of 10px
             let path = `M ${x1} ${y1}`;
-            
+
             for (let i = 1; i <= segments; i++) {
                 const p = i / segments;
                 const currentXOnLine = x1 + dx * p;
                 const currentYOnLine = y1 + dy * p;
-                
+
                 const sineOffset = amplitude * Math.sin(p * d / wavelength * 2 * Math.PI);
-                
+
                 const perpAngle = angle + Math.PI / 2;
                 const finalX = currentXOnLine + sineOffset * Math.cos(perpAngle);
                 const finalY = currentYOnLine + sineOffset * Math.sin(perpAngle);
@@ -469,39 +975,46 @@
                 const portCount = parseInt(item.dataset.ports, 10);
                 const nameInput = item.querySelector('input[type="text"]');
                 const name = nameInput.value.trim();
-                
-                createDevice(type, null, { model, portCount, name });
+
+                createDevice(type, null, {model, portCount, name});
                 nameInput.value = ''; // Clear input after adding
             });
         });
+        ``
 
         function createDevice(type, loadedDevice = null, options = {}) {
             const deviceId = loadedDevice ? loadedDevice.id : `${type.toLowerCase()}-${nextDeviceId++}`;
-            
+
             let device;
             if (loadedDevice) {
                 device = loadedDevice;
             } else {
                 const defaultPorts = [];
                 for (let i = 1; i <= (options.portCount || 0); i++) {
-                    defaultPorts.push({ id: `port-${deviceId}-${i}`, name: `ether${i}`, ips: [], vlans: [], bridge: null });
+                    defaultPorts.push({
+                        id: `port-${deviceId}-${i}`,
+                        name: `ether${i}`,
+                        ips: [],
+                        vlans: [],
+                        bridge: null
+                    });
                 }
 
                 device = {
-                    id: deviceId, type: type, 
+                    id: deviceId, type: type,
                     name: options.name || `${type} ${nextDeviceId}`,
                     x: 100, y: 100, ports: defaultPorts, bridges: [],
-                    model: options.model || '', 
+                    model: options.model || '',
                     site: 'Default Site', customImage: null,
                     vpns: [], ipTunnels: [],
                     hidden: false
                 };
             }
-            
+
             if (device.ports) {
                 device.ports = device.ports.map(p => ({
-                    ...p, 
-                    ips: p.ips || [], 
+                    ...p,
+                    ips: p.ips || [],
                     vlans: p.vlans || []
                 }));
             }
@@ -527,13 +1040,13 @@
             } else {
                 iconHtml = `<svg class="device-icon"><use href="#icon-${device.type}"></use></svg>`;
             }
-            
+
             deviceEl.innerHTML = `
                 <div class="device-ports-container"></div>
                 ${iconHtml}
                 <div class="device-label">${device.name}</div>
             `;
-            
+
             makeDraggable(deviceEl, device);
             deviceEl.addEventListener('click', e => {
                 e.stopPropagation();
@@ -560,12 +1073,12 @@
                 const portEl = document.createElement('div');
                 portEl.className = 'visual-port';
                 portEl.textContent = index + 1;
-                
+
                 portEl.dataset.portId = port.id;
-                
+
                 portEl.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    if(isLinking) handleLinkStep(device, port);
+                    if (isLinking) handleLinkStep(device, port);
                 });
 
                 // Show detailed tooltip on hover
@@ -576,7 +1089,7 @@
                 container.appendChild(portEl);
             });
         }
-        
+
         // --- Tooltip Logic ---
         function showDeviceTooltip(device, x, y) {
             if (isLinking || device.hidden) return;
@@ -608,15 +1121,15 @@
             `;
 
             if (port.ips.length > 0 || port.vlans.length > 0) {
-                 detailHtml += `<div class="detail">`;
-                 if(port.ips.length > 0) detailHtml += `IPs: ${port.ips.map(ip => `<span class="ip-tag">${ip}</span>`).join(' ')}<br>`;
-                 if(port.vlans.length > 0) {
-                     detailHtml += `VLANs: <br>`;
-                     port.vlans.forEach(vlan => {
+                detailHtml += `<div class="detail">`;
+                if (port.ips.length > 0) detailHtml += `IPs: ${port.ips.map(ip => `<span class="ip-tag">${ip}</span>`).join(' ')}<br>`;
+                if (port.vlans.length > 0) {
+                    detailHtml += `VLANs: <br>`;
+                    port.vlans.forEach(vlan => {
                         detailHtml += `&nbsp;&nbsp;VLAN ${vlan.id}: ${vlan.ips.map(ip => `<span class="ip-tag">${ip}</span>`).join(' ') || '(no IPs)'}<br>`;
-                     });
-                 }
-                 detailHtml += `</div>`;
+                    });
+                }
+                detailHtml += `</div>`;
             }
 
             tooltip.innerHTML = detailHtml;
@@ -626,17 +1139,17 @@
 
         function showLinkTooltip(link, x, y) {
             if (isLinking) return;
-            
+
             const srcDev = findDevice(link.sourceDeviceId);
             const tgtDev = findDevice(link.targetDeviceId);
-            
+
             if (!srcDev || !tgtDev || srcDev.hidden || tgtDev.hidden) return;
 
             const srcPort = findPort(link.sourceDeviceId, link.sourcePortId);
             const tgtPort = findPort(link.targetDeviceId, link.targetPortId);
 
             const ips = link.ips.map(ip => `<span class="ip-tag">${ip}</span>`).join(' ');
-            
+
             let detailHtml = `
                 <strong>Link Type: ${link.linkType}</strong>
                 <div class="detail">
@@ -645,7 +1158,7 @@
                 </div>
             `;
             if (ips) {
-                 detailHtml += `<div class="detail">IPs: ${ips}</div>`;
+                detailHtml += `<div class="detail">IPs: ${ips}</div>`;
             }
 
             tooltip.innerHTML = detailHtml;
@@ -668,11 +1181,11 @@
             deselectAll();
             selectedItem = item;
             propertiesPanel.classList.remove('hidden');
-            
-            if (item.type) { 
+
+            if (item.type) {
                 document.getElementById(item.id)?.classList.add('selected');
                 renderDeviceProperties();
-            } else { 
+            } else {
                 document.getElementById(item.id)?.classList.add('selected');
                 renderLinkProperties();
             }
@@ -687,9 +1200,10 @@
             selectedItem = null;
             propertiesPanel.classList.add('hidden');
         }
+
         canvas.addEventListener('click', deselectAll);
 
-        function renderDeviceProperties() { 
+        function renderDeviceProperties() {
             if (!selectedItem || !selectedItem.type) return;
 
             const visibilityText = selectedItem.hidden ? 'Show Device' : 'Hide Device';
@@ -717,7 +1231,7 @@
                         <button id="delete-device-btn" class="prop-button danger">Delete Device</button>
                     </div>
                 </div>`;
-            
+
             document.getElementById('device-name').addEventListener('input', e => {
                 selectedItem.name = e.target.value;
                 document.querySelector(`#${selectedItem.id} .device-label`).textContent = selectedItem.name;
@@ -728,29 +1242,48 @@
                 updateDeviceFilters();
                 applyDeviceVisibility();
             });
-            document.getElementById('device-model').addEventListener('change', e => { selectedItem.model = e.target.value; });
+            document.getElementById('device-model').addEventListener('change', e => {
+                selectedItem.model = e.target.value;
+            });
             document.getElementById('image-upload').addEventListener('change', handleImageUpload);
             document.getElementById('clear-image-btn')?.addEventListener('click', handleImageClear);
 
             document.getElementById('delete-device-btn').addEventListener('click', deleteDevice);
             document.getElementById('toggle-visibility-btn').addEventListener('click', toggleDeviceVisibility);
-            
+
             document.getElementById('add-port-btn').addEventListener('click', () => {
-                selectedItem.ports.push({ id: `port-${Date.now()}`, name: `ether${selectedItem.ports.length + 1}`, ips: [], vlans: [], bridge: null });
+                selectedItem.ports.push({
+                    id: `port-${Date.now()}`,
+                    name: `ether${selectedItem.ports.length + 1}`,
+                    ips: [],
+                    vlans: [],
+                    bridge: null
+                });
                 renderPorts();
                 renderVisualPorts(selectedItem);
             });
             document.getElementById('add-bridge-btn').addEventListener('click', () => {
-                selectedItem.bridges.push({ id: `bridge-${Date.now()}`, name: `Bridge ${selectedItem.bridges.length + 1}` });
+                selectedItem.bridges.push({
+                    id: `bridge-${Date.now()}`,
+                    name: `Bridge ${selectedItem.bridges.length + 1}`
+                });
                 renderBridges();
             });
 
             document.getElementById('add-vpn-btn').addEventListener('click', () => {
-                selectedItem.vpns.push({ id: `vpn-${Date.now()}`, name: `VPN ${selectedItem.vpns.length + 1}`, remoteIp: '' });
+                selectedItem.vpns.push({
+                    id: `vpn-${Date.now()}`,
+                    name: `VPN ${selectedItem.vpns.length + 1}`,
+                    remoteIp: ''
+                });
                 renderServices('vpn');
             });
             document.getElementById('add-tunnel-btn').addEventListener('click', () => {
-                selectedItem.ipTunnels.push({ id: `tunnel-${Date.now()}`, name: `Tunnel ${selectedItem.ipTunnels.length + 1}`, remoteIp: '' });
+                selectedItem.ipTunnels.push({
+                    id: `tunnel-${Date.now()}`,
+                    name: `Tunnel ${selectedItem.ipTunnels.length + 1}`,
+                    remoteIp: ''
+                });
                 renderServices('tunnel');
             });
 
@@ -759,13 +1292,13 @@
             renderServices('vpn');
             renderServices('tunnel');
         }
-        
+
         // --- Image Handling Fix ---
         function handleImageUpload(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(event) {
+                reader.onload = function (event) {
                     selectedItem.customImage = event.target.result;
                     renderDevice(selectedItem);
                     renderDeviceProperties();
@@ -786,7 +1319,7 @@
             renderDeviceProperties();
             if (selectedItem.hidden) deselectAll();
         }
-        
+
         // Helper functions for Device Properties
         function deleteDevice() {
             document.getElementById(selectedItem.id).remove();
@@ -796,16 +1329,17 @@
             drawLinks();
             updateDeviceFilters();
         }
-        
-        function renderPorts() { 
+
+        function renderPorts() {
             const portsList = document.getElementById('ports-list');
-            if(!portsList || !selectedItem || !selectedItem.type) return;
+            if (!portsList || !selectedItem || !selectedItem.type) return;
             portsList.innerHTML = '';
-            
+
             const bridgeOptions = selectedItem.bridges.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
-            
+
             selectedItem.ports.forEach(port => {
-                const li = document.createElement('li'); li.className = 'port-item';
+                const li = document.createElement('li');
+                li.className = 'port-item';
                 li.innerHTML = `
                     <div class="port-header"><strong>${port.name}</strong><span>&#x25BC;</span></div>
                     <div class="port-details">
@@ -830,7 +1364,7 @@
                         
                         <hr style="border-color: #444;">
                         <button class="prop-button danger remove-port-btn" data-port-id="${port.id}">Remove Port</button>
-                    </div>`; 
+                    </div>`;
 
                 const selectEl = li.querySelector('.port-bridge-select');
                 if (port.bridge) selectEl.value = port.bridge;
@@ -839,22 +1373,22 @@
                 renderPortDetails(port);
             });
             portsList.querySelectorAll('.port-header').forEach(h => h.addEventListener('click', () => h.parentElement.classList.toggle('expanded')));
-            
+
             portsList.querySelectorAll('.remove-port-btn').forEach(btn => btn.addEventListener('click', e => {
                 selectedItem.ports = selectedItem.ports.filter(p => p.id !== e.target.dataset.portId);
-                renderPorts(); 
+                renderPorts();
                 renderVisualPorts(selectedItem);
                 renderBridges();
             }));
             portsList.querySelectorAll('.port-name-input').forEach(input => {
-                input.addEventListener('change', e => { 
-                    selectedItem.ports.find(p => p.id === e.target.dataset.portId).name = e.target.value; 
-                    renderVisualPorts(selectedItem); 
+                input.addEventListener('change', e => {
+                    selectedItem.ports.find(p => p.id === e.target.dataset.portId).name = e.target.value;
+                    renderVisualPorts(selectedItem);
                     renderBridges();
                 });
             });
             portsList.querySelectorAll('.port-bridge-select').forEach(select => {
-                select.addEventListener('change', e => { 
+                select.addEventListener('change', e => {
                     selectedItem.ports.find(p => p.id === e.target.dataset.portId).bridge = e.target.value || null;
                     renderBridges();
                 });
@@ -867,11 +1401,11 @@
             const ipListEl = document.getElementById(`port-ips-${port.id}`);
             const vlanListEl = document.getElementById(`port-vlans-${port.id}`);
 
-            ipListEl.innerHTML = port.ips.map((ip, index) => 
+            ipListEl.innerHTML = port.ips.map((ip, index) =>
                 `<span class="detail-item ip">${ip}<button data-port-id="${port.id}" data-type="ip" data-index="${index}">x</button></span>`
             ).join('');
-            
-            vlanListEl.innerHTML = port.vlans.map((vlan) => 
+
+            vlanListEl.innerHTML = port.vlans.map((vlan) =>
                 `<div class="detail-item vlan">
                     VLAN ${vlan.id} <button data-port-id="${port.id}" data-type="vlan" data-vlan-id="${vlan.id}">x</button>
                     <div class="vlan-ip-section">
@@ -885,7 +1419,7 @@
             ipListEl.querySelectorAll('button').forEach(btn => btn.addEventListener('click', handleRemovePortDetail));
             vlanListEl.querySelectorAll('button').forEach(btn => btn.addEventListener('click', handleRemovePortDetail));
             vlanListEl.querySelectorAll('.add-vlan-ip-btn').forEach(btn => btn.addEventListener('click', handleAddVLANIP));
-            
+
             renderVisualPorts(selectedItem);
         }
 
@@ -908,18 +1442,18 @@
             const port = selectedItem.ports.find(p => p.id === portId);
             const vlanNum = parseInt(vlanId);
             if (!isNaN(vlanNum) && vlanNum > 0 && vlanNum <= 4094 && port && !port.vlans.find(v => v.id === vlanNum)) {
-                port.vlans.push({ id: vlanNum, ips: [] });
+                port.vlans.push({id: vlanNum, ips: []});
                 input.value = '';
                 renderPortDetails(port);
             }
         }
-        
+
         function handleAddVLANIP(e) {
-            const { portId, vlanId } = e.target.dataset;
+            const {portId, vlanId} = e.target.dataset;
             const input = document.getElementById(`add-vlan-ip-input-${portId}-${vlanId}`);
             const ip = input.value.trim();
             const port = selectedItem.ports.find(p => p.id === portId);
-            const vlan = port.vlans.find(v => v.id == vlanId);
+            const vlan = port.vlans.find(v => v.id === vlanId);
 
             if (ip && vlan && !vlan.ips.includes(ip) && /\d/.test(ip)) {
                 vlan.ips.push(ip);
@@ -930,23 +1464,23 @@
 
         function handleRemovePortDetail(e) {
             const btn = e.target;
-            const { portId, type, vlanId, index } = btn.dataset;
+            const {portId, type, vlanId, index} = btn.dataset;
             const port = selectedItem.ports.find(p => p.id === portId);
-            
+
             if (port) {
                 if (type === 'ip') port.ips.splice(index, 1);
-                if (type === 'vlan') port.vlans = port.vlans.filter(v => v.id != vlanId);
+                if (type === 'vlan') port.vlans = port.vlans.filter(v => v.id !== vlanId);
                 if (type === 'vlan-ip') {
-                    const vlan = port.vlans.find(v => v.id == vlanId);
-                    if(vlan) vlan.ips.splice(index, 1);
+                    const vlan = port.vlans.find(v => v.id === vlanId);
+                    if (vlan) vlan.ips.splice(index, 1);
                 }
                 renderPortDetails(port);
             }
         }
-        
+
         function renderBridges() {
             const bridgesList = document.getElementById('bridges-list');
-            if(!bridgesList || !selectedItem || !selectedItem.type) return;
+            if (!bridgesList || !selectedItem || !selectedItem.type) return;
             bridgesList.innerHTML = selectedItem.bridges.map(bridge => `
                 <li class="bridge-item">
                     <div class="bridge-header">
@@ -957,9 +1491,9 @@
                         <input type="text" class="bridge-name-input" value="${bridge.name}" data-bridge-id="${bridge.id}">
                         <label>Member Ports</label>
                         <ul id="bridge-ports-${bridge.id}">
-                            ${selectedItem.ports.filter(p => p.bridge === bridge.id).map(p => 
-                                `<li>${p.name} <button class="prop-button danger small remove-port-from-bridge-btn" data-port-id="${p.id}" data-bridge-id="${bridge.id}">x</button></li>`
-                            ).join('')}
+                            ${selectedItem.ports.filter(p => p.bridge === bridge.id).map(p =>
+                `<li>${p.name} <button class="prop-button danger small remove-port-from-bridge-btn" data-port-id="${p.id}" data-bridge-id="${bridge.id}">x</button></li>`
+            ).join('')}
                         </ul>
                         <button class="prop-button danger small remove-bridge-btn" data-bridge-id="${bridge.id}">Remove Bridge</button>
                     </div>
@@ -967,15 +1501,21 @@
             `).join('');
 
             bridgesList.querySelectorAll('.bridge-header').forEach(h => h.addEventListener('click', () => h.parentElement.classList.toggle('expanded')));
-            
+
             bridgesList.querySelectorAll('.bridge-name-input').forEach(input => {
-                input.addEventListener('change', e => { selectedItem.bridges.find(b => b.id === e.target.dataset.bridgeId).name = e.target.value; renderPorts(); renderBridges(); });
+                input.addEventListener('change', e => {
+                    selectedItem.bridges.find(b => b.id === e.target.dataset.bridgeId).name = e.target.value;
+                    renderPorts();
+                    renderBridges();
+                });
             });
-            
+
             bridgesList.querySelectorAll('.remove-bridge-btn').forEach(btn => btn.addEventListener('click', e => {
                 const bridgeId = e.target.dataset.bridgeId;
                 selectedItem.bridges = selectedItem.bridges.filter(b => b.id !== bridgeId);
-                selectedItem.ports.forEach(p => { if (p.bridge === bridgeId) p.bridge = null; });
+                selectedItem.ports.forEach(p => {
+                    if (p.bridge === bridgeId) p.bridge = null;
+                });
                 renderBridges();
                 renderPorts();
             }));
@@ -986,13 +1526,14 @@
                 renderPorts();
             }));
         }
-        function renderServices(serviceType) { 
+
+        function renderServices(serviceType) {
             const listEl = document.getElementById(`${serviceType}s-list`);
             if (!listEl || !selectedItem || !selectedItem.type) return;
-            
+
             const serviceArray = serviceType === 'vpn' ? selectedItem.vpns : selectedItem.ipTunnels;
             const displayType = serviceType.toUpperCase();
-            
+
             listEl.innerHTML = serviceArray.map(service => `
                 <li class="service-item">
                     <div class="service-header"><strong>${service.name} (${displayType})</strong><span>&#x25BC;</span></div>
@@ -1007,7 +1548,7 @@
             `).join('');
 
             listEl.querySelectorAll('.service-header').forEach(h => h.addEventListener('click', () => h.parentElement.classList.toggle('expanded')));
-            
+
             listEl.querySelectorAll('.remove-service-btn').forEach(btn => btn.addEventListener('click', e => {
                 const id = e.target.dataset.serviceId;
                 const type = e.target.dataset.type;
@@ -1035,7 +1576,8 @@
                 });
             });
         }
-        function renderLinkProperties() { 
+
+        function renderLinkProperties() {
             if (!selectedItem || selectedItem.type) return;
 
             const srcDev = findDevice(selectedItem.sourceDeviceId);
@@ -1063,24 +1605,32 @@
                 </div>`;
             renderLinkIPs();
 
-            document.getElementById('link-color').addEventListener('input', e => { selectedItem.color = e.target.value; drawLinks(); });
-            document.getElementById('delete-link-btn').addEventListener('click', () => { 
-                links = links.filter(l => l.id !== selectedItem.id); 
-                deselectAll(); 
-                drawLinks(); 
+            document.getElementById('link-color').addEventListener('input', e => {
+                selectedItem.color = e.target.value;
+                drawLinks();
+            });
+            document.getElementById('delete-link-btn').addEventListener('click', () => {
+                links = links.filter(l => l.id !== selectedItem.id);
+                deselectAll();
+                drawLinks();
             });
 
             if (ipEnabledLinkTypes.includes(selectedItem.linkType)) {
                 document.getElementById('add-link-ip-btn').addEventListener('click', () => {
                     const input = document.getElementById('add-link-ip-input');
-                    if (input.value.trim()) { selectedItem.ips.push(input.value.trim()); input.value = ''; renderLinkIPs(); }
+                    if (input.value.trim()) {
+                        selectedItem.ips.push(input.value.trim());
+                        input.value = '';
+                        renderLinkIPs();
+                    }
                 });
             }
         }
+
         function renderLinkIPs() {
             const listEl = document.getElementById('link-ip-list');
             if (!listEl) return;
-            listEl.innerHTML = selectedItem.ips.map((ip, index) => 
+            listEl.innerHTML = selectedItem.ips.map((ip, index) =>
                 `<span class="detail-item ip">${ip}<button data-type="link-ip" data-index="${index}">x</button></span>`
             ).join('');
             listEl.querySelectorAll('button').forEach(btn => btn.addEventListener('click', e => {
@@ -1100,18 +1650,19 @@
 
         function handleLinkStep(device, port) {
             if (!linkStartPoint) {
-                linkStartPoint = { device, port };
+                linkStartPoint = {device, port};
             } else if (linkStartPoint.device.id !== device.id) {
-                showLinkModal({ device, port });
+                showLinkModal({device, port});
             }
         }
-        
+
         function showLinkModal(endPoint) {
-            if(document.getElementById('link-modal')) document.getElementById('link-modal').remove();
-            
+            if (document.getElementById('link-modal')) document.getElementById('link-modal').remove();
+
             const modal = document.createElement('div');
-            modal.id = 'link-modal'; modal.className = 'modal-backdrop';
-            
+            modal.id = 'link-modal';
+            modal.className = 'modal-backdrop';
+
             let optionsHtml = '';
             for (const type in linkVisuals) {
                 optionsHtml += `<option value="${type}">${type}</option>`;
@@ -1124,7 +1675,7 @@
                     <button id="confirm-link-btn" class="prop-button">Create</button><button id="cancel-link-btn" class="prop-button danger">Cancel</button>
                 </div>`;
             document.body.appendChild(modal);
-            
+
             document.getElementById('confirm-link-btn').onclick = () => {
                 const type = document.getElementById('link-type-select').value;
                 links.push({
@@ -1133,17 +1684,19 @@
                     targetDeviceId: endPoint.device.id, targetPortId: endPoint.port.id,
                     linkType: type, color: linkVisuals[type].stroke || '#ffffff', ips: []
                 });
-                drawLinks(); resetLinking();
+                drawLinks();
+                resetLinking();
             };
             document.getElementById('cancel-link-btn').onclick = resetLinking;
         }
 
         function resetLinking() {
-            if(document.getElementById('link-modal')) document.getElementById('link-modal').remove();
+            if (document.getElementById('link-modal')) document.getElementById('link-modal').remove();
             isLinking = false;
             document.body.classList.remove('linking-active');
             addLinkBtn.classList.remove('active');
-            linkStartPoint = null; canvas.style.cursor = 'default';
+            linkStartPoint = null;
+            canvas.style.cursor = 'default';
         }
 
         // --- Filtering/Visibility Logic ---
@@ -1172,7 +1725,7 @@
                 siteFilterContainer.appendChild(label);
             });
             deviceFilterGroup.appendChild(siteFilterContainer);
-            
+
             deviceFilterGroup.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
                 checkbox.addEventListener('change', () => {
                     applyDeviceVisibility();
@@ -1184,14 +1737,14 @@
         function applyDeviceVisibility() {
             const visibleTypes = new Set(Array.from(deviceFilterGroup.querySelectorAll('input[data-filter-type="type"]:checked')).map(cb => cb.dataset.filterValue));
             const visibleSites = new Set(Array.from(deviceFilterGroup.querySelectorAll('input[data-filter-type="site"]:checked')).map(cb => cb.dataset.filterValue));
-            
+
             devices.forEach(device => {
                 const deviceEl = document.getElementById(device.id);
                 if (!deviceEl) return;
-                
+
                 const isFilterVisible = visibleTypes.has(device.type) && visibleSites.has(device.site);
                 const isVisible = isFilterVisible && !device.hidden;
-                
+
                 deviceEl.classList.toggle('hidden', !isVisible);
                 if (!isVisible && deviceEl.classList.contains('selected')) {
                     deselectAll();
@@ -1210,10 +1763,10 @@
                 const targetDeviceEl = document.getElementById(link.targetDeviceId);
                 const srcDev = findDevice(link.sourceDeviceId);
                 const tgtDev = findDevice(link.targetDeviceId);
-                
+
                 if (!sourceDeviceEl || !targetDeviceEl || sourceDeviceEl.classList.contains('hidden') || targetDeviceEl.classList.contains('hidden') || (srcDev && srcDev.hidden) || (tgtDev && tgtDev.hidden)) {
-                     if (selectedItem?.id === link.id) deselectAll();
-                     return;
+                    if (selectedItem?.id === link.id) deselectAll();
+                    return;
                 }
                 if (!visibleLinkTypes.has(link.linkType)) {
                     if (selectedItem?.id === link.id) deselectAll();
@@ -1223,17 +1776,17 @@
                 const sourcePortEl = document.querySelector(`#${link.sourceDeviceId} .visual-port[data-port-id="${link.sourcePortId}"]`);
                 const targetPortEl = document.querySelector(`#${link.targetDeviceId} .visual-port[data-port-id="${link.targetPortId}"]`);
                 if (!sourcePortEl || !targetPortEl) return;
-                
+
                 const cRect = canvas.getBoundingClientRect();
                 const sRect = sourcePortEl.getBoundingClientRect();
                 const tRect = targetPortEl.getBoundingClientRect();
-                const x1 = sRect.left-cRect.left+sRect.width/2, y1 = sRect.top-cRect.top+sRect.height/2;
-                const x2 = tRect.left-cRect.left+tRect.width/2, y2 = tRect.top-cRect.top+tRect.height/2;
-                
+                const x1 = sRect.left - cRect.left + sRect.width / 2, y1 = sRect.top - cRect.top + sRect.height / 2;
+                const x2 = tRect.left - cRect.left + tRect.width / 2, y2 = tRect.top - cRect.top + tRect.height / 2;
+
                 const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                
-                const visual = linkVisuals[link.linkType] || { stroke: '#ffffff', strokeWidth: 2, dash: 'none' };
+
+                const visual = linkVisuals[link.linkType] || {stroke: '#ffffff', strokeWidth: 2, dash: 'none'};
                 let pathData;
 
                 if (visual.dash === 'wave') {
@@ -1251,43 +1804,55 @@
                 if (visual.dash !== 'none' && visual.dash !== 'wave' && visual.dash !== 'wave_alt') {
                     line.setAttribute('stroke-dasharray', visual.dash);
                 }
-                
-                line.id = link.id; 
+
+                line.id = link.id;
                 line.classList.add('link-path');
                 if (selectedItem?.id === link.id) line.classList.add('selected');
 
-                line.addEventListener('click', e => { e.stopPropagation(); selectItem(link); });
-                
-                line.addEventListener('mousemove', e => { 
-                    showLinkTooltip(link, e.clientX, e.clientY); 
+                line.addEventListener('click', e => {
+                    e.stopPropagation();
+                    selectItem(link);
+                });
+
+                line.addEventListener('mousemove', e => {
+                    showLinkTooltip(link, e.clientX, e.clientY);
                 });
                 line.addEventListener('mouseleave', hideTooltip);
 
                 const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                text.setAttribute('x', (x1+x2)/2); text.setAttribute('y', (y1+y2)/2 - 10);
-                text.classList.add('link-label'); 
+                text.setAttribute('x', (x1 + x2) / 2);
+                text.setAttribute('y', (y1 + y2) / 2 - 10);
+                text.classList.add('link-label');
                 text.textContent = link.linkType;
-                
-                group.appendChild(line); 
-                group.appendChild(text); 
+
+                group.appendChild(line);
+                group.appendChild(text);
                 linkSvg.appendChild(group);
             });
         }
+
         function makeDraggable(element, device) {
             element.onmousedown = e => {
                 if (element.classList.contains('hidden')) return;
 
-                e.preventDefault(); e.stopPropagation();
+                e.preventDefault();
+                e.stopPropagation();
                 let pos3 = e.clientX, pos4 = e.clientY;
                 document.onmousemove = ev => {
                     let pos1 = pos3 - ev.clientX, pos2 = pos4 - ev.clientY;
-                    pos3 = ev.clientX; pos4 = ev.clientY;
-                    device.x = element.offsetLeft - pos1; device.y = element.offsetTop - pos2;
-                    element.style.left = `${device.x}px`; element.style.top = `${device.y}px`;
+                    pos3 = ev.clientX;
+                    pos4 = ev.clientY;
+                    device.x = element.offsetLeft - pos1;
+                    device.y = element.offsetTop - pos2;
+                    element.style.left = `${device.x}px`;
+                    element.style.top = `${device.y}px`;
                     drawLinks();
-                    if (tooltip.style.opacity == 1) updateTooltipPosition(ev.clientX, ev.clientY);
+                    if (tooltip.style.opacity === 1) updateTooltipPosition(ev.clientX, ev.clientY);
                 };
-                document.onmouseup = () => { document.onmouseup = null; document.onmousemove = null; };
+                document.onmouseup = () => {
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                };
             };
         }
 
@@ -1297,7 +1862,7 @@
             // if you want to avoid window.confirm()
             resetSchematic();
         });
-        
+
         function resetSchematic() {
             deselectAll();
             canvas.querySelectorAll('.device').forEach(d => d.remove());
@@ -1309,27 +1874,29 @@
             updateDeviceFilters();
         }
 
-        exportJpgBtn.addEventListener('click', () => { 
+        exportJpgBtn.addEventListener('click', () => {
             const previouslySelected = selectedItem;
-            deselectAll(); 
+            deselectAll();
             html2canvas(document.getElementById('canvas')).then(canvas => {
                 const link = document.createElement('a');
                 link.download = 'network-schematic.jpg';
                 link.href = canvas.toDataURL("image/jpeg");
                 link.click();
-                if(previouslySelected) selectItem(previouslySelected); 
+                if (previouslySelected) selectItem(previouslySelected);
             });
         });
 
-        exportJsonBtn.addEventListener('click', () => { 
-            const state = { devices, links, nextDeviceId, nextLinkID };
+        exportJsonBtn.addEventListener('click', () => {
+            const state = {devices, links, nextDeviceId, nextLinkID};
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
             const a = document.createElement('a');
-            a.setAttribute("href", dataStr); a.setAttribute("download", "network-schematic.json");
-            a.click(); a.remove();
+            a.setAttribute("href", dataStr);
+            a.setAttribute("download", "network-schematic.json");
+            a.click();
+            a.remove();
         });
 
-        importFile.addEventListener('change', (event) => { 
+        importFile.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
@@ -1338,7 +1905,9 @@
                     const state = JSON.parse(e.target.result);
                     if (state.devices && state.links) loadState(state);
                     else alert('Invalid schematic file.');
-                } catch (error) { alert('Error parsing file: ' + error.message); }
+                } catch (error) {
+                    alert('Error parsing file: ' + error.message);
+                }
             };
             reader.readAsText(file);
             importFile.value = '';
@@ -1350,13 +1919,13 @@
             state.devices.forEach(device => {
                 device.ports.forEach(port => {
                     if (port.vlans && port.vlans.every(v => typeof v === 'number')) {
-                        port.vlans = port.vlans.map(vlanId => ({ id: vlanId, ips: [] }));
+                        port.vlans = port.vlans.map(vlanId => ({id: vlanId, ips: []}));
                     }
                 });
             });
-            devices = state.devices; 
+            devices = state.devices;
             links = state.links;
-            nextDeviceId = state.nextDeviceId || 0; 
+            nextDeviceId = state.nextDeviceId || 0;
             nextLinkID = state.nextLinkID || 0;
             devices.forEach(device => renderDevice(device));
             drawLinks();
@@ -1365,7 +1934,7 @@
 
         updateDeviceFilters();
     });
-    </script>
+</script>
 </body>
 </html>
 
