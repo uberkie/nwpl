@@ -1,0 +1,515 @@
+:root {
+    --bg-color: #000000;
+    --primary-color: #1a1a1a;
+    --secondary-color: #2b2b2b;
+    --font-color: #ffffff;
+    --accent-color: #99cc00;
+    --border-color: #676767;
+    --danger-color: #dc3545;
+    --info-color: #00aaff;
+    --tooltip-bg: rgba(43, 43, 43, 0.95); /* Semi-transparent secondary */
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--font-color);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    background-color: var(--primary-color);
+    padding: 10px 20px;
+    border-bottom: 2px solid var(--border-color);
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header img {
+    height: 40px;
+    margin-right: 15px;
+}
+
+.main-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Toolbar */
+.toolbar {
+    width: 250px;
+    background-color: var(--primary-color);
+    padding: 15px;
+    border-right: 2px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+}
+
+.toolbar h3 {
+    margin-top: 0;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    color: var(--font-color);
+}
+
+.toolbar-button {
+    padding: 10px;
+    background-color: var(--secondary-color);
+    color: var(--font-color);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toolbar-button .device-icon {
+    width: 24px;
+    height: 24px;
+    fill: var(--font-color);
+}
+
+.toolbar-button:hover {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    font-weight: bold;
+}
+
+.toolbar-button:hover .device-icon {
+    fill: var(--bg-color);
+}
+
+.toolbar-button.active {
+    background-color: var(--danger-color);
+}
+
+/* Device Catalogue */
+.device-catalogue summary {
+    font-weight: bold;
+    color: var(--accent-color);
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.device-catalogue summary:hover {
+    background-color: var(--secondary-color);
+}
+
+.catalogue-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px;
+    margin: 4px 0;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--secondary-color);
+}
+
+.catalogue-item p {
+    font-size: 0.8em;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.catalogue-item .controls {
+    display: flex;
+    gap: 5px;
+}
+
+.catalogue-item input[type="text"] {
+    flex-grow: 1;
+    padding: 4px;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--font-color);
+    border-radius: 3px;
+    font-size: 0.8em;
+}
+
+.catalogue-item .add-device-btn {
+    padding: 4px 8px;
+    background-color: var(--accent-color);
+    color: black;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+
+/* Filter Controls */
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+    padding: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.filter-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+/* Canvas */
+#canvas {
+    flex-grow: 1;
+    position: relative;
+    background-color: var(--bg-color);
+    background-image: linear-gradient(var(--border-color) 1px, transparent 1px), linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+    background-size: 25px 25px;
+    overflow: hidden;
+}
+
+.device {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 8px;
+    background-color: var(--secondary-color);
+    border: 2px solid var(--border-color);
+    cursor: grab;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    padding-top: 5px;
+    transition: opacity 0.3s, border-color 0.1s;
+}
+
+.device.hidden {
+    opacity: 0.1;
+    pointer-events: none;
+}
+
+.device.selected {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px var(--accent-color);
+}
+
+.device-icon {
+    width: 32px;
+    height: 32px;
+    fill: var(--font-color);
+}
+
+.device-custom-image {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+}
+
+.device-label {
+    font-size: 10px;
+    margin-top: 5px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px 4px;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+
+/* Visual Ports */
+.device-ports-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    padding: 2px;
+    box-sizing: border-box;
+}
+
+.visual-port {
+    width: 16px;
+    height: 16px;
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 5px black;
+    cursor: help;
+    transition: all 0.2s;
+
+    pointer-events: none;
+}
+
+/* Make ports visible and interactive on selected device OR during linking */
+.device.selected .visual-port,
+body.linking-active .device .visual-port {
+    opacity: 1;
+    pointer-events: auto;
+    cursor: crosshair;
+}
+
+body.linking-active .device .visual-port:hover {
+    transform: scale(1.3);
+    background-color: white;
+}
+
+/* Properties Panel */
+#properties-panel {
+    width: 300px;
+    background-color: var(--primary-color);
+    padding: 15px;
+    border-left: 2px solid var(--border-color);
+    overflow-y: auto;
+    transition: width 0.3s;
+}
+
+#properties-panel.hidden {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.prop-group {
+    margin-bottom: 20px;
+}
+
+.prop-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.prop-group input[type="text"], .prop-group input[type="color"], .prop-group textarea, .modal-content select, .prop-group input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    background-color: var(--secondary-color);
+    border: 1px solid var(--border-color);
+    color: var(--font-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+.prop-group input[type="color"] {
+    height: 40px;
+    padding: 2px;
+}
+
+.prop-button {
+    padding: 8px 12px;
+    background-color: var(--accent-color);
+    color: #000;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
+.prop-button.danger {
+    background-color: var(--danger-color);
+    color: #fff;
+}
+
+.prop-button.info {
+    background-color: var(--info-color);
+    color: #000;
+}
+
+.prop-button.small {
+    padding: 4px 8px;
+    font-size: 0.8em;
+}
+
+.port-item, .bridge-item, .service-item {
+    background: var(--secondary-color);
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+}
+
+.port-header, .bridge-header, .service-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.port-details, .bridge-details, .service-details {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border-color);
+}
+
+.port-item.expanded .port-details, .bridge-item.expanded .bridge-details, .service-item.expanded .service-details {
+    display: block;
+}
+
+.detail-item {
+    font-size: 12px;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    padding: 3px 6px;
+    border-radius: 10px;
+    margin: 2px;
+    display: inline-block;
+}
+
+.detail-item.ip {
+    border-color: var(--accent-color);
+}
+
+.detail-item.vlan {
+    border-color: var(--info-color);
+}
+
+.detail-item button {
+    margin-left: 5px;
+    padding: 0 4px;
+    background: var(--danger-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 10px;
+    line-height: 1;
+}
+
+.link-info {
+    font-size: 0.9em;
+    margin-top: 5px;
+    padding: 8px;
+    background-color: var(--secondary-color);
+    border-radius: 4px;
+}
+
+/* Modal & Links */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: var(--primary-color);
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+#link-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.link-path {
+    fill: none;
+    pointer-events: stroke;
+    cursor: pointer;
+    transition: stroke-width 0.2s;
+}
+
+.link-path.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.link-path.selected {
+    stroke-width: 8 !important;
+}
+
+/* Use important to override specific stroke-width */
+.link-label {
+    fill: var(--font-color);
+    font-size: 11px;
+    text-anchor: middle;
+    pointer-events: none;
+}
+
+.link-label.hidden {
+    display: none;
+}
+
+/* --- Tooltip (Hover Popup) Styling --- */
+#tooltip {
+    position: absolute;
+    z-index: 1000;
+    background-color: var(--tooltip-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 4px;
+    padding: 8px 12px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s, transform 0.15s;
+    transform: translate(10px, 10px); /* Offset from cursor/element */
+    max-width: 250px;
+    font-size: 0.85em;
+    line-height: 1.4;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+#tooltip strong {
+    color: var(--accent-color);
+    display: block;
+    margin-top: 3px;
+}
+
+#tooltip .detail {
+    margin-top: 5px;
+    border-top: 1px solid #444;
+    padding-top: 5px;
+}
+
+#tooltip .ip-tag {
+    background-color: #333;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+.vlan-ip-section {
+    padding-left: 15px;
+    border-left: 2px solid var(--info-color);
+    margin-top: 5px;
+}
