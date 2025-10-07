@@ -513,3 +513,10 @@ body.linking-active .device .visual-port:hover {
     border-left: 2px solid var(--info-color);
     margin-top: 5px;
 }
+
+details summary::marker {
+    content: "▶";
+}
+details[open] summary::marker {
+    content: "▼";
+}

@@ -1,1 +1,7 @@
 /network/.venv/
+/network/__pycache__/
+/network/*.pyc
+/reactpy_components/__pycache__/
+/reactpy_components/*.pyc
+*.pyc
+.DS_Store

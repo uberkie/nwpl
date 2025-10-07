@@ -164,6 +164,7 @@ def PortItem(port, device_id, on_update_port=None, on_remove_port=None, on_add_p
     bridge, set_bridge = use_state(port.get("bridge", ""))
     ip_input, set_ip_input = use_state("")
     vlan_input, set_vlan_input = use_state("")
+    is_open, set_open = use_state("False")
 
     # Handlers
     def handle_name_change(e):
@@ -198,15 +199,16 @@ def PortItem(port, device_id, on_update_port=None, on_remove_port=None, on_add_p
         if on_add_port:
             on_add_port(device_id)
 
+    def handle_open(event):
+        set_open(event)
+
     # Render
     return html.div({"className": "prop-group"},
                     html.label({}, "Ports"),
                     html.ul({},
-                            html.li({"className": "port-item expanded"},
-                                    html.div({"className": "port-header"},
-                                             html.strong({}, name),
-                                             html.span({}, "▼")
-                                             ),
+                            html.details({"open": False, "onclick": handle_open},
+                                         html.summary({"className": "port-header"}, name),
+
                                     html.div({"className": "port-details"},
                                              html.label({}, "Name"),
                                              html.input({
@@ -275,11 +277,9 @@ def BridgesPanel(bridges, on_add_bridge, on_update_bridge, on_remove_bridge):
                     html.label({}, "Bridges"),
                     html.ul({},
                             *[
-                                html.li({"className": "bridge-item expanded", "key": b["id"]},
-                                        html.div({"className": "bridge-header"},
-                                                 html.strong({}, b["name"]),
-                                                 html.span({}, "▼")
-                                                 ),
+
+                             html.details({"open": False, "key": b["id"]},
+                                html.summary({"className": "bridge-header"}, b["name"]),
                                         html.div({"className": "bridge-details"},
                                                  html.label({}, "Name"),
                                                  html.input({
