@@ -1,4 +1,4 @@
-from django.shortcuts import render
+#from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import render
@@ -6,3 +6,6 @@ from django.shortcuts import render
 
 def dashboard_view(request):
     return render(request, "dashboard.html", {})
+
+def add_device(request):
+    return render(request, 'device_model.html', {})
