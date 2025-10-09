@@ -1,6 +1,7 @@
 from reactpy import component, html, hooks, use_state, event
 import asyncio
 from asgiref.sync import sync_to_async
+from ._notifier import notify
 
 # Small admin UI to manage device models stored in the Django ORM
 @component
@@ -42,6 +43,11 @@ def DeviceModelsAdmin():
 
         # refresh list and type options
         await load()
+        # notify listeners (catalogue) to reload immediately
+        try:
+            notify()
+        except Exception:
+            pass
         set_model_value("")
         set_display("")
         set_type("")
@@ -60,6 +66,11 @@ def DeviceModelsAdmin():
                 pass
             # refresh list in main context
             await load()
+            # notify listeners after delete
+            try:
+                notify()
+            except Exception:
+                pass
 
         import asyncio
         asyncio.create_task(_del())

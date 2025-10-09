@@ -1,70 +1,13 @@
 from reactpy import component, html, hooks
 import asyncio
 from asgiref.sync import sync_to_async
+from ._notifier import subscribe
 
-# Define your device catalogue data (fallback)
-DEVICE_CATALOGUE = {
-    "Routers": [
-        {"type": "Router", "model": "MikroTik hEX 5 Port Gigabit Desktop Router | E50UG", "ports": 5,
-         "display": "MikroTik hEX 5 Port"},
-        {"type": "Router", "model": "MikroTik hEX S 5 Port Gigabit 1x 2.5G SFP Desktop Router | E60iUGS", "ports": 6,
-         "display": "MikroTik hEX S 6 Port"},
-        {"type": "Router", "model": "MikroTik 10 Port Gigabit 1SFP+ 4 Core L5 Rack-Mount Router | RB4011iGS+RM",
-         "ports": 11, "display": "MikroTik RB4011 11 Port"},
-        {"type": "Router", "model": "MikroTik 8 Gigabit 1x2.5Gbps SFP Dual Core Router | L009UiGS-RM", "ports": 9,
-         "display": "MikroTik L009 9 Port"}
-    ],
-    "Switches": [
-        {"type": "Switch", "model": "MikroTik Cloud Router Switch 8 Port PoE 4SFP | CRS112-8P-4S-IN", "ports": 12,
-         "display": "MikroTik CRS112 12 Port"},
-        {"type": "Switch", "model": "MikroTik SwOS Cloud Smart Switch 24 Port Gigabit 2SFP+ | CSS326-24G-2S+RM",
-         "ports": 26, "display": "MikroTik CSS326 26 Port"},
-        {"type": "Switch", "model": "MikroTik Cloud Router Switch 24 Port Gigabit 2SFP+ | CRS326-24G-2S+RM",
-         "ports": 26, "display": "MikroTik CRS326 26 Port"},
-        {"type": "Switch", "model": "MikroTik Cloud Router Switch 24 Port PoE 450W 4SFP+| CRS328-24P-4S+RM",
-         "ports": 28, "display": "MikroTik CRS328 28 Port"},
-        {"type": "Switch", "model": "Netgear GS724PTT with 26 Ports", "ports": 26,
-         "display": "Netgear GS724PTT 26 Port"}
-    ],
-    "Access Points": [
-        {"type": "AP", "model": "MikroTik NetMetal 5SHP AC 1SFP Outdoor WiFi Router | RB922UAGS-5HPacD-NM", "ports": 3,
-         "display": "MikroTik NetMetal 5SHP"},
-        {"type": "AP", "model": "MikroTik OmniTIK 5ac 7.5dBi PoE Outdoor WiFi Omni AP | RBOmniTikPG-5HacD", "ports": 8,
-         "display": "MikroTik OmniTIK 5ac"},
-        {"type": "AP", "model": "MikroTik LHG 60GHz PtP CPE | RBLHGG-60ad", "ports": 2,
-         "display": "MikroTik LHG 60GHz"},
-        {"type": "AP", "model": "MikroTik LHG 5 24.5 PtP CPE | RBLHG5", "ports": 2, "display": "MikroTik LHG 5"},
-        {"type": "AP", "model": "MikroTik LHG XL HP5 27dBi PtP | RBLHG-5HPnD-XL", "ports": 2,
-         "display": "MikroTik LHG XL HP5"},
-        {"type": "AP", "model": "MikroTik SXTsq 5 ac 16dBi Dual Chain Outdoor CPE | RBSXTsqG-5acD", "ports": 2,
-         "display": "MikroTik SXTsq 5 ac"},
-        {"type": "AP", "model": "Ubiquiti UISP airMAX Loco AC 5GHz 13dBi Radio | LOCO5AC", "ports": 2,
-         "display": "Ubiquiti Loco AC 5GHz"},
-        {"type": "AP", "model": "Ubiquiti UISP airMAX PowerBeam AC 5GHz 25dBi Radio | PBE-5AC-Gen2", "ports": 2,
-         "display": "Ubiquiti PowerBeam AC"}
-    ],
-    "Servers": [
-        {"type": "Server", "model": "Dell Poweredge R320", "ports": 5, "display": "Dell Poweredge R320"},
-        {"type": "Server", "model": "Dell Poweredge R710", "ports": 5, "display": "Dell Poweredge R710"},
-        {"type": "Server", "model": "Dell Poweredge R720", "ports": 5, "display": "Dell Poweredge R720"},
-        {"type": "Server", "model": "Dell Poweredge R580", "ports": 5, "display": "Dell Poweredge R580"},
-        {"type": "Server", "model": "HP Proliant DL380 Gen 8", "ports": 5, "display": "HP Proliant DL380 G8"},
-        {"type": "Server", "model": "Supermicro NAS", "ports": 3, "display": "Supermicro NAS"}
-    ],
-    "Recorders": [
-        {"type": "NVR", "model": "Hikvision DS-7608NXI-I2/8P/S", "ports": 1, "display": "Hikvision NVR 7608"},
-        {"type": "NVR", "model": "Hikvision DS-7616NXI-I2/16P/S", "ports": 1, "display": "Hikvision NVR 7616"},
-        {"type": "NVR", "model": "Dahua DHI-NVR4116HS-8P-4KS3", "ports": 1, "display": "Dahua NVR 4116"},
-        {"type": "DVR", "model": "Hikvision iDS-7116HQHI-M1/T", "ports": 1, "display": "Hikvision DVR 7116"},
-        {"type": "DVR", "model": "Hikvision iDS-7108HQHI-M1/T", "ports": 1, "display": "Hikvision DVR 7108"}
-    ],
-    "Other": [
-        {"type": "Firewall", "model": "Fortinet Fortigate", "ports": 4, "display": "Fortinet Fortigate"},
-        {"type": "ONT", "model": "Calix Gigabit ONT", "ports": 1, "display": "Calix Gigabit ONT"},
-        {"type": "ONT", "model": "Cisco ONT", "ports": 8, "display": "Cisco ONT"},
-        {"type": "Fibre", "model": "Fibre Splice", "ports": 0, "display": "Fibre Splice"}
-    ]
-}
+# Define your device catalogue data (fallback). Do NOT query the ORM at import
+# time because ReactPy runs in an async context and that triggers
+# SynchronousOnlyOperation. The live DB loader inside the component will
+# fetch rows using sync_to_async.
+DEVICE_CATALOGUE = {}
 
 
 @component
@@ -139,44 +82,65 @@ def DeviceCatalogue(on_add_device=None):
         if mapping:
             set_data(mapping)
 
-    # Start an async poller that reloads the DB every few seconds so the
-    # catalogue reflects newly-created devices without requiring a page reload.
+    # Use a single async effect that runs the loader and then polls.
     poll_interval = 5.0  # seconds
 
-    poll_task = None
-
-    async def _poller():
-        # run an initial load first
+    async def _effect_poller():
+        # initial load
         await load_from_db()
         try:
             while True:
                 await asyncio.sleep(poll_interval)
                 await load_from_db()
         except asyncio.CancelledError:
-            # expected on cleanup
+            # cleanup when component unmounts
             return
 
-    def _start_poller():
-        nonlocal poll_task
-        if poll_task is None or poll_task.done():
-            poll_task = asyncio.create_task(_poller())
+    # ReactPy's hooks.use_effect accepts an async function; pass the poller directly.
+    # Also subscribe to the in-process notifier so creates/deletes trigger an
+    # immediate reload.
+    def _subscribe_and_run():
+        # subscribe returns an unsubscribe callable
+        unsub = subscribe(lambda: asyncio.create_task(load_from_db()))
+        # return unsubscribe so the effect cleanup will remove subscriber
+        return unsub
 
-    def _stop_poller():
-        nonlocal poll_task
-        try:
-            if poll_task is not None and not poll_task.done():
-                poll_task.cancel()
-        finally:
-            poll_task = None
-
-    # Start the poller when the component mounts, and cancel it on cleanup
-    def _mount():
-        _start_poller()
-        return _stop_poller
-
-    hooks.use_effect(_mount, [])
+    hooks.use_effect(_effect_poller, [])
+    hooks.use_effect(_subscribe_and_run, [])
 
     return html.div({"className": "device-catalogue"},
                     *[DeviceCategory(category_name, devices, on_add_device) for category_name, devices in
                       (data.items() if isinstance(data, dict) else [])]
                     )
+
+
+def run_catalogue_load_for_tests():
+    """Development helper: run the same DB->mapping transformation synchronously and return the mapping.
+
+    Use from manage.py shell for quick verification that DB rows map to the UI groups.
+    """
+    from planning.models import DeviceModel
+
+    qs = list(DeviceModel.objects.all().order_by('category', 'display'))
+    mapping = {}
+    category_map = {
+        "router": "Routers",
+        "switch": "Switches",
+        "access point": "Access Points",
+        "server": "Servers",
+        "recorder": "Recorders",
+        "cctv": "Other",
+        "other": "Other",
+    }
+
+    for m in qs:
+        raw = (m.category or "other").strip().lower()
+        cat = category_map.get(raw, raw.title())
+        mapping.setdefault(cat, []).append({
+            "type": m.type,
+            "model": m.model,
+            "ports": m.ports,
+            "display": m.display,
+        })
+
+    return mapping

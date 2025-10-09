@@ -1,6 +1,7 @@
 from reactpy import component, html, svg, hooks, use_state, event
-from reactpy_components.device_catalogue import DEVICE_CATALOGUE
+from reactpy_components.device_catalogue import DEVICE_CATALOGUE, DeviceCatalogue as RemoteDeviceCatalogue
 import asyncio
+from asgiref.sync import sync_to_async
 
 @component
 def Sidebar(on_add_device=None, on_toggle_link=None, linking_active=False, catalogue=None):
@@ -39,7 +40,7 @@ def Sidebar(on_add_device=None, on_toggle_link=None, linking_active=False, catal
 
         html.div({"className": "toolbar"},
                  html.h3({}, "Device Catalogue"),
-                 html.div({"className": "device-catalogue"}, DeviceCatalogue(catalogue, on_add_device)),
+                 html.div({"className": "device-catalogue"}, RemoteDeviceCatalogue(on_add_device)),
                  html.hr(),
                  html.h3({}, "Device Filters"),
                  html.div({"id": "device-filter-group", "className": "filter-group"}),
@@ -522,18 +523,27 @@ def Dashboard():
     # Device catalogue loaded from DB (seed from DEVICE_CATALOGUE if empty)
     catalogue_state, set_catalogue_state = use_state(None)
 
-    def seed_and_load_catalogue():
+    def _schedule_catalogue_load():
+        # Schedule the async loader; kept as a sync wrapper for use_effect.
+        asyncio.create_task(seed_and_load_catalogue())
+
+
+    async def seed_and_load_catalogue():
         try:
             # local import to avoid module-level Django dependency issues
             from network.planning.models import DeviceModel
-            # seed
-            if DeviceModel.objects.count() == 0:
-                for cat, items in DEVICE_CATALOGUE.items():
+
+            # seed only if DB empty (use sync_to_async for thread-safe DB access)
+            count = await sync_to_async(DeviceModel.objects.count, thread_sensitive=True)()
+            if count == 0:
+                # DeviceCatalogue fallback may be a dict of categories -> items
+                for cat, items in (DEVICE_CATALOGUE.items() if isinstance(DEVICE_CATALOGUE, dict) else []):
                     for item in items:
                         dm = DeviceModel(category=cat, type=item.get('type', ''), model=item.get('model', ''), ports=item.get('ports', 0), display=item.get('display', ''))
-                        dm.save()
-            # load and group
-            qs = DeviceModel.objects.all().order_by('category', 'display')
+                        await sync_to_async(dm.save, thread_sensitive=True)()
+
+            # load and group (fetch queryset safely)
+            qs = await sync_to_async(list, thread_sensitive=True)(DeviceModel.objects.all().order_by('category', 'display'))
             grouped = {}
             for m in qs:
                 grouped.setdefault(m.category or 'Other', []).append({
@@ -547,7 +557,8 @@ def Dashboard():
             # fallback to in-memory constant if DB unavailable
             set_catalogue_state(DEVICE_CATALOGUE)
 
-    hooks.use_effect(lambda: seed_and_load_catalogue(), [])
+
+    hooks.use_effect(lambda: _schedule_catalogue_load(), [])
 
     # Link / interface type definitions
     link_types = ['Ethernet', 'DAC', 'AOC', 'Fibre', 'Wireless', 'VPN', 'VLAN', 'IP-IP Tunnel', 'IP Sec Tunnel', 'Routed']
@@ -1245,11 +1256,19 @@ def Dashboard():
         # device label centered
         label = svg.text({"x": dev_w / 2, "y": dev_h - 6, "fontSize": 10, "fill": "#fff", "textAnchor": "middle"}, d.get('name') or d.get('id'))
 
+        # small delete button in the top-right of the device body
+        delete_btn = svg.g({"transform": f"translate({dev_w - 14},{4})", "style": {"cursor": "pointer"},
+                    "onClick": (lambda e, did=d['id']: delete_device(did))},
+                svg.rect({"x": 0, "y": 0, "width": 12, "height": 12, "rx": 2, "ry": 2,
+                        "fill": "#ff4444", "stroke": "#aa0000", "strokeWidth": "1"}),
+                svg.text({"x": 6, "y": 9, "fontSize": 10, "fill": "#fff", "textAnchor": "middle"}, "×"))
+
         # attach mouse handlers to the group so device is clickable/draggable even when ports overlay it
         dev_group = svg.g({"transform": f"translate({dev_x},{dev_y})", "id": d['id'],
-                           "on_mouse_down": (lambda e, did=d['id']: on_device_mouse_down(did, e)),
-                           "onClick": (lambda e, did=d['id']: select_device(did)),
-                           "style": {"cursor": "grab"}}, device_body, *port_elements, label)
+                "on_mouse_down": (lambda e, did=d['id']: on_device_mouse_down(did, e)),
+                "onClick": (lambda e, did=d['id']: select_device(did)),
+                "style": {"cursor": "grab"}}, device_body, *port_elements, label, delete_btn)
+
         svg_children.append(dev_group)
 
 
