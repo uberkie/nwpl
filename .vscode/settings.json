@@ -1,0 +1,34 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3307,
+            "driver": "MariaDB",
+            "name": "a",
+            "database": "djangomon",
+            "username": "ajswa"
+        },
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "aa",
+            "database": "F:\\db.sqlite3"
+        },
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "s",
+            "database": "F:\\db.sqlite3"
+        },
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "nwpt",
+            "database": "\\\\wsl.localhost\\Ubuntu-22.New\\home\\aj\\plantool\\nwpl\\network\\db.sqlite3"
+        }
+    ]
+}

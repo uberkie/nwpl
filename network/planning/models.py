@@ -4,7 +4,7 @@ from django.db import models
 class DeviceModel(models.Model):
 	"""Stores device catalogue entries so the ReactPy dashboard can load them dynamically."""
 	category = models.CharField(max_length=128, blank=True, default="")
-	type = models.CharField(max_length=128)
+	type = models.CharField(max_length=128, blank=True, null=True)
 	model = models.CharField(max_length=256, blank=True, default="")
 	ports = models.IntegerField(default=0)
 	display = models.CharField(max_length=256, blank=True, default="")

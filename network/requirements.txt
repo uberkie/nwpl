@@ -1,3 +1,5 @@
 django
-reactpy
+reactpy-django
 daphne
+channels
+sqlite3
