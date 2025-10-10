@@ -235,7 +235,13 @@ class Router(Device):
                         if m.get("translated_dst") == packet.get("dst") and m.get("egress") is None:
                             m["egress"] = p
                     return simulator.forward_l2(self, p, packet)
-            return {"type": "unreachable", "from": self.name}
+            # If we couldn't find a local port, check nat_table for an egress port to forward to
+            for m in self.nat_table:
+                if m.get("translated_dst") == dst and m.get("egress") is not None:
+                    packet.setdefault("trace", []).append({"device": self.name, "action": "nat-egress-fallback", "egress": m.get("egress").id})
+                    return simulator.forward_l2(self, m.get("egress"), packet)
+
+            return {"type": "unreachable", "from": self.name, "trace": packet.get("trace", []) + [{"device": self.name, "action": "l2-dst-not-found"}]}
         else:
             # gateway is an IP — try to find device with that IP on same bridge
             target = simulator.find_device_by_ip(gw)
