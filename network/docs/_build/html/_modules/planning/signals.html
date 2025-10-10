@@ -1,0 +1,203 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>planning.signals &mdash; Next Level Networks – Network Planning Tool 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=2709fde1"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Next Level Networks – Network Planning Tool
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">planning</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Next Level Networks – Network Planning Tool</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">planning.signals</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for planning.signals</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Signal handlers for planning app.</span>
+
+<span class="sd">We implement lightweight post_save/post_delete handlers for DeviceModel that:</span>
+<span class="sd">- send a Channels group message so any websocket consumer can react</span>
+<span class="sd">- attempt to call an in-process notifier (if present) so ReactPy components</span>
+<span class="sd">- subscribed to that notifier reload immediately in a single-process dev server</span>
+
+<span class="sd">This file intentionally tolerates absence of Channels or the notifier so it</span>
+<span class="sd">won&#39;t crash in minimal environments.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">django.db.models.signals</span> <span class="kn">import</span> <span class="n">post_save</span><span class="p">,</span> <span class="n">post_delete</span>
+<span class="kn">from</span> <span class="nn">django.dispatch</span> <span class="kn">import</span> <span class="n">receiver</span>
+
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="c1"># Local import to avoid import-time DB access</span>
+	<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">DeviceModel</span>
+<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+	<span class="n">DeviceModel</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">from</span> <span class="nn">channels.layers</span> <span class="kn">import</span> <span class="n">get_channel_layer</span>
+	<span class="kn">from</span> <span class="nn">asgiref.sync</span> <span class="kn">import</span> <span class="n">async_to_sync</span>
+<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+	<span class="n">get_channel_layer</span> <span class="o">=</span> <span class="kc">None</span>
+	<span class="n">async_to_sync</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="k">def</span> <span class="nf">_notify_inprocess</span><span class="p">():</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;Call in-process notifier.notify() if the module exists.</span>
+
+<span class="sd">	This call is optional — if the notifier module isn&#39;t present (for example</span>
+<span class="sd">	in some CI or test environments), we simply ignore the error.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">try</span><span class="p">:</span>
+		<span class="c1"># import lazily; reactpy_components may not exist in all environments</span>
+		<span class="kn">from</span> <span class="nn">reactpy_components</span> <span class="kn">import</span> <span class="n">_notifier</span>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="c1"># prefer a function named notify()</span>
+			<span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">_notifier</span><span class="p">,</span> <span class="s2">&quot;notify&quot;</span><span class="p">):</span>
+				<span class="n">_notifier</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span>
+		<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+			<span class="c1"># swallow notifier errors — we don&#39;t want signal handlers to raise</span>
+			<span class="k">pass</span>
+	<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+		<span class="c1"># notifier not available — no-op</span>
+		<span class="k">return</span>
+
+
+<span class="k">def</span> <span class="nf">_send_channel_message</span><span class="p">(</span><span class="n">event_type</span><span class="p">,</span> <span class="n">instance_id</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;Send a small message on the channel layer group (if available).</span>
+
+<span class="sd">	The websocket consumer in this project listens on group &quot;chat_general&quot; so</span>
+<span class="sd">	we use that (safe no-op if channels isn&#39;t installed).</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">if</span> <span class="n">get_channel_layer</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">async_to_sync</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+		<span class="k">return</span>
+	<span class="k">try</span><span class="p">:</span>
+		<span class="n">layer</span> <span class="o">=</span> <span class="n">get_channel_layer</span><span class="p">()</span>
+		<span class="c1"># ChatConsumer.chat_message expects event to carry message_id and content</span>
+		<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+			<span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;device_model:</span><span class="si">{</span><span class="n">instance_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+			<span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;event&quot;</span><span class="p">:</span> <span class="n">event_type</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;DeviceModel&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">instance_id</span><span class="p">},</span>
+		<span class="p">}</span>
+		<span class="c1"># send to a well-known group; consumers can choose to handle this</span>
+		<span class="n">async_to_sync</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">group_send</span><span class="p">)(</span><span class="s2">&quot;chat_general&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;chat_message&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">payload</span><span class="p">})</span>
+	<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+		<span class="c1"># Channels not configured or send failed — ignore</span>
+		<span class="k">pass</span>
+
+
+<div class="viewcode-block" id="device_model_saved">
+<a class="viewcode-back" href="../../planning.html#planning.signals.device_model_saved">[docs]</a>
+<span class="nd">@receiver</span><span class="p">(</span><span class="n">post_save</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">device_model_saved</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">created</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+	<span class="c1"># only act on DeviceModel saves (avoid acting on unrelated models)</span>
+	<span class="k">if</span> <span class="n">DeviceModel</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">sender</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">DeviceModel</span><span class="p">:</span>
+		<span class="k">return</span>
+	<span class="k">try</span><span class="p">:</span>
+		<span class="n">_notify_inprocess</span><span class="p">()</span>
+		<span class="n">_send_channel_message</span><span class="p">(</span><span class="s2">&quot;created&quot;</span> <span class="k">if</span> <span class="n">created</span> <span class="k">else</span> <span class="s2">&quot;updated&quot;</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+	<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+		<span class="c1"># keep signal handlers robust</span>
+		<span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="device_model_deleted">
+<a class="viewcode-back" href="../../planning.html#planning.signals.device_model_deleted">[docs]</a>
+<span class="nd">@receiver</span><span class="p">(</span><span class="n">post_delete</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">device_model_deleted</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+	<span class="k">if</span> <span class="n">DeviceModel</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">sender</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">DeviceModel</span><span class="p">:</span>
+		<span class="k">return</span>
+	<span class="k">try</span><span class="p">:</span>
+		<span class="n">_notify_inprocess</span><span class="p">()</span>
+		<span class="n">_send_channel_message</span><span class="p">(</span><span class="s2">&quot;deleted&quot;</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+	<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+		<span class="k">pass</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, AJ.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

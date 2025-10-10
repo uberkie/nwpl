@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Next Level Networks – Network Planning Tool &mdash; Next Level Networks – Network Planning Tool 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=2709fde1"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="planning" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Next Level Networks – Network Planning Tool
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">planning</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Next Level Networks – Network Planning Tool</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Next Level Networks – Network Planning Tool</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="next-level-networks-network-planning-tool">
+<h1>Next Level Networks – Network Planning Tool<a class="headerlink" href="#next-level-networks-network-planning-tool" title="Link to this heading"></a></h1>
+<p>An interactive, server-driven network planning environment built with Django and
+ReactPy. The application lets engineers design topologies, manage device
+catalogues, edit bridges and VLANs, and validate connectivity using an embedded
+Python network simulator – all without shipping browser-side JavaScript.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Next</span> <span class="pre">Level</span> <span class="pre">Networks</span></code> combines three major building blocks:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><strong>ReactPy dashboard</strong> – a draggable SVG canvas with device catalogue,</dt><dd><p>properties panel, link controls, and an in-app terminal.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Django backend</strong> – persistence for device models, REST-style endpoints for</dt><dd><p>topology operations, and admin tooling.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Lightweight simulator</strong> – models routers, bridges, NAT, and ICMP to sanity</dt><dd><p>check paths directly from the dashboard UI.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="key-features">
+<h2>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Drag-and-drop device placement on a zoom-friendly canvas.</p></li>
+<li><p>ORM-backed device catalogue with ReactPy CRUD admin.</p></li>
+<li><dl class="simple">
+<dt>Per-port editing: names, interface types, IP assignments, VLANs, bridge</dt><dd><p>membership, and ad-hoc interface creation/removal.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Link management with compatibility checks, color coding, comments, and JSON</dt><dd><p>export/import support.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Embedded simulator terminal supporting <code class="docutils literal notranslate"><span class="pre">ping</span></code> and <code class="docutils literal notranslate"><span class="pre">traceroute</span></code> against</dt><dd><p>the live topology, plus NAT-aware routing logic.</p>
+</dd>
+</dl>
+</li>
+<li><p>Automatic normalisation of legacy exports (port IDs, bridge membership).</p></li>
+</ul>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Install dependencies</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="o">.</span><span class="n">venv</span>
+<span class="n">source</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Apply database migrations</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">migrate</span>
+</pre></div>
+</div>
+</li>
+<li><dl>
+<dt><strong>(Optional) Patch ReactPy SVG constructors</strong> – enable text/title children by</dt><dd><p>editing <code class="docutils literal notranslate"><span class="pre">site-packages/reactpy/svg.py</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="n">make_vdom_constructor</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="n">allow_children</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">title</span> <span class="o">=</span> <span class="n">make_vdom_constructor</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="n">allow_children</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><p><strong>Run the development server</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">runserver</span>
+</pre></div>
+</div>
+</li>
+<li><p>Open <a class="reference external" href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a> to launch the dashboard.</p></li>
+</ol>
+</section>
+<section id="dashboard-tour">
+<h2>Dashboard Tour<a class="headerlink" href="#dashboard-tour" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><dl class="simple">
+<dt><strong>Device Catalogue</strong> – organise hardware by category, seeded from the Django</dt><dd><p>ORM. Add devices with unique names, then drag them onto the canvas.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Canvas Interactions</strong> – drag to reposition, select to reveal properties,</dt><dd><p>and open the context menu on links for colour and comment edits.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Properties Panel</strong> – modify ports, bridges, VPNs, and IP tunnels; add or</dt><dd><p>remove interfaces; assign VLANs; and invoke manual link creation.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Simulator Terminal</strong> – choose a device and port, then run <code class="docutils literal notranslate"><span class="pre">ping</span></code> or</dt><dd><p><code class="docutils literal notranslate"><span class="pre">traceroute</span></code>. The simulator rebuilds from the current canvas state so
+results always reflect the live topology.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Export / Import</strong> – generate JSON snapshots or reload prior designs for</dt><dd><p>iteration and sharing.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="current-capabilities">
+<h2>Current Capabilities<a class="headerlink" href="#current-capabilities" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Device catalogue CRUD via ReactPy and Django admin.</p></li>
+<li><p>Canvas layout with draggable devices, deletions, and link context editing.</p></li>
+<li><p>Automatic port/bridge/VLAN normalisation for backwards-compatible imports.</p></li>
+<li><p>Simulator support for bridges, routers, SNAT/DNAT, and longest-prefix routing.</p></li>
+<li><p>Real-time feedback from simulator commands embedded within the dashboard.</p></li>
+</ul>
+</section>
+<section id="production-hardening-checklist">
+<h2>Production Hardening Checklist<a class="headerlink" href="#production-hardening-checklist" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>[ ] Persist user-specific diagrams (database or revisioned storage).</p></li>
+<li><dl class="simple">
+<dt>[ ] Add authentication/authorization guardrails around catalogue &amp; topology</dt><dd><p>access.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>[ ] Provide APIs for saving/loading schematics and integrating with external</dt><dd><p>tooling.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>[ ] Expand automated testing: Django views, simulator unit tests, and</dt><dd><p>ReactPy component snapshots.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>[ ] Introduce CI/CD pipeline with linting, type checks, and deployment</dt><dd><p>automation.</p>
+</dd>
+</dl>
+</li>
+<li><p>[ ] Improve accessibility (keyboard navigation, ARIA roles, colour contrast).</p></li>
+<li><p>[ ] Harden simulator error handling and expose structured diagnostics in UI.</p></li>
+<li><p>[ ] Document architecture, simulator internals, and extension workflows.</p></li>
+</ul>
+</section>
+<section id="further-reading">
+<h2>Further Reading<a class="headerlink" href="#further-reading" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://reactpy.dev/">ReactPy documentation</a></p></li>
+<li><p><a class="reference external" href="https://docs.djangoproject.com/en/stable/">Django documentation</a></p></li>
+<li><p><a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html">Sphinx reStructuredText essentials</a></p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">planning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="planning.html">planning package</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-right" title="planning" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, AJ.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

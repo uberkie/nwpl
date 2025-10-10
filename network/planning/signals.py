@@ -3,7 +3,7 @@
 We implement lightweight post_save/post_delete handlers for DeviceModel that:
 - send a Channels group message so any websocket consumer can react
 - attempt to call an in-process notifier (if present) so ReactPy components
-  subscribed to that notifier reload immediately in a single-process dev server
+- subscribed to that notifier reload immediately in a single-process dev server
 
 This file intentionally tolerates absence of Channels or the notifier so it
 won't crash in minimal environments.

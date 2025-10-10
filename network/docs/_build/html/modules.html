@@ -1,0 +1,163 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>planning &mdash; Next Level Networks – Network Planning Tool 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=2709fde1"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Planning Django App" href="planning.html" />
+    <link rel="prev" title="Next Level Networks – Network Planning Tool" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Next Level Networks – Network Planning Tool
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">planning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="planning.html">Planning Django App</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Next Level Networks – Network Planning Tool</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">planning</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="planning">
+<h1>planning<a class="headerlink" href="#planning" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="planning.html">Planning Django App</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="planning.html#high-level-responsibilities">High-level responsibilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planning.html#data-model">Data model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planning.html#view-layer">View layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planning.html#real-time-integration">Real-time integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planning.html#signals">Signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planning.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planning.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html">API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="planning.html#module-planning">API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="planning.html#planning.apps.PlanningConfig"><code class="docutils literal notranslate"><span class="pre">PlanningConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="planning.html#planning.apps.PlanningConfig.default_auto_field"><code class="docutils literal notranslate"><span class="pre">PlanningConfig.default_auto_field</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="planning.html#planning.apps.PlanningConfig.name"><code class="docutils literal notranslate"><span class="pre">PlanningConfig.name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="planning.html#planning.consumers.ChatConsumer"><code class="docutils literal notranslate"><span class="pre">ChatConsumer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="planning.html#planning.consumers.ChatConsumer.chat_message"><code class="docutils literal notranslate"><span class="pre">ChatConsumer.chat_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="planning.html#planning.consumers.ChatConsumer.connect"><code class="docutils literal notranslate"><span class="pre">ChatConsumer.connect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="planning.html#planning.consumers.ChatConsumer.disconnect"><code class="docutils literal notranslate"><span class="pre">ChatConsumer.disconnect()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="planning.html#planning.models.DeviceModel"><code class="docutils literal notranslate"><span class="pre">DeviceModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="planning.html#planning.models.DeviceModel.DoesNotExist"><code class="docutils literal notranslate"><span class="pre">DeviceModel.DoesNotExist</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="planning.html#planning.models.DeviceModel.MultipleObjectsReturned"><code class="docutils literal notranslate"><span class="pre">DeviceModel.MultipleObjectsReturned</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="planning.html#planning.models.DeviceModel.category"><code class="docutils literal notranslate"><span class="pre">DeviceModel.category</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="planning.html#planning.models.DeviceModel.created_at"><code class="docutils literal notranslate"><span class="pre">DeviceModel.created_at</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="planning.html#planning.models.DeviceModel.display"><code class="docutils literal notranslate"><span class="pre">DeviceModel.display</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="planning.html#planning.models.DeviceModel.get_next_by_created_at"><code class="docutils literal notranslate"><span class="pre">DeviceModel.get_next_by_created_at()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="planning.html#planning.models.DeviceModel.get_previous_by_created_at"><code class="docutils literal notranslate"><span class="pre">DeviceModel.get_previous_by_created_at()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="planning.html#planning.models.DeviceModel.id"><code class="docutils literal notranslate"><span class="pre">DeviceModel.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="planning.html#planning.models.DeviceModel.model"><code class="docutils literal notranslate"><span class="pre">DeviceModel.model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="planning.html#planning.models.DeviceModel.objects"><code class="docutils literal notranslate"><span class="pre">DeviceModel.objects</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="planning.html#planning.models.DeviceModel.ports"><code class="docutils literal notranslate"><span class="pre">DeviceModel.ports</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="planning.html#planning.models.DeviceModel.type"><code class="docutils literal notranslate"><span class="pre">DeviceModel.type</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="planning.html#planning.signals.device_model_deleted"><code class="docutils literal notranslate"><span class="pre">device_model_deleted()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="planning.html#planning.signals.device_model_saved"><code class="docutils literal notranslate"><span class="pre">device_model_saved()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="planning.html#planning.views.add_device"><code class="docutils literal notranslate"><span class="pre">add_device()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="planning.html#planning.views.dashboard_view"><code class="docutils literal notranslate"><span class="pre">dashboard_view()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Next Level Networks – Network Planning Tool" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="planning.html" class="btn btn-neutral float-right" title="Planning Django App" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, AJ.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
