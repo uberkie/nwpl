@@ -216,22 +216,43 @@ class Device:
             trace = res.get("trace", [])
         return success, trace
 
-    def traceroute(self, src_ip: str, dst_ip: str, simulator: "NetworkSimulator", max_hops: int = 30) -> List[str]:
-        path = []
+    def traceroute(self, src_ip: str, dst_ip: str, simulator: "NetworkSimulator", max_hops: int = 30) -> List[Dict]:
+        hops: List[Dict] = []
         for ttl in range(1, max_hops + 1):
             pkt = {"type": "icmp-echo", "src": src_ip, "dst": dst_ip, "ttl": ttl}
             pkt = self.apply_snat(pkt)
             res = simulator.handle_packet(pkt, self, None)
-            if isinstance(res, dict):
-                if res.get("type") == "icmp-reply":
-                    path.extend(res.get("trace", []))
-                    break
-                elif res.get("type") == "icmp-time-exceeded":
-                    path.extend(res.get("trace", []))
-                elif res.get("type") == "unreachable":
-                    path.extend(res.get("trace", []))
-                    break
-        return path
+            if not isinstance(res, dict):
+                hops.append({
+                    "ttl": ttl,
+                    "result": "timeout",
+                    "device": None,
+                    "trace": [],
+                })
+                continue
+
+            trace = list(res.get("trace", []))
+            responder = res.get("from")
+            if not responder:
+                for entry in reversed(trace):
+                    if entry.get("action") == "reply":
+                        responder = entry.get("device")
+                        break
+                if not responder and trace:
+                    responder = trace[-1].get("device")
+
+            hop_info = {
+                "ttl": ttl,
+                "result": res.get("type"),
+                "device": responder,
+                "trace": trace,
+            }
+            hops.append(hop_info)
+
+            if res.get("type") in ("icmp-reply", "unreachable"):
+                break
+
+        return hops
 
 
 class Router(Device):
@@ -256,24 +277,32 @@ class Router(Device):
         return None
 
     def receive_packet(self, packet: Dict, ingress: Port, simulator: "NetworkSimulator") -> Optional[Dict]:
-        # Decrement TTL
-        packet["ttl"] = packet.get("ttl", 64) - 1
-        if packet["ttl"] <= 0:
-            return {"type": "icmp-time-exceeded", "from": self.name, "trace": packet.get("trace", []) + [{"device": self.name, "action": "ttl-expired"}]}
-        # Forward based on routing table
         dst = packet.get("dst")
         # preserve original dst for mapping
         orig_dst = dst
         if not orig_dst:
             return {"type": "error", "reason": "no-dst", "from": self.name, "trace": packet.get("trace", [])}
 
-        # If the packet is destined to one of our own addresses, consume it here
+        # If the packet is destined to one of our own addresses, consume it here without decrementing TTL
         try:
             if dst and self.find_port_for_src(dst):
-                packet.setdefault("trace", []).append({"device": self.name, "action": "deliver"})
-                return packet
+                trace = packet.setdefault("trace", [])
+                trace.append({"device": self.name, "action": "deliver"})
+                trace.append({"device": self.name, "action": "reply"})
+                return {
+                    "type": "icmp-reply",
+                    "src": str(dst),
+                    "dst": packet.get("src"),
+                    "trace": trace,
+                    "path": packet.get("path", []) + [self.name],
+                }
         except Exception:
             pass
+
+        # Decrement TTL for transit packets only
+        packet["ttl"] = packet.get("ttl", 64) - 1
+        if packet["ttl"] <= 0:
+            return {"type": "icmp-time-exceeded", "from": self.name, "trace": packet.get("trace", []) + [{"device": self.name, "action": "ttl-expired"}]}
 
         # If this packet is a reply intended for a previously SNATed flow, reverse-translate
         for m in list(self.nat_table):

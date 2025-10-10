@@ -99,6 +99,18 @@ def build_simulator_from_topology(devices_state, links_state):
                 if p.ip_interface:
                     sim_device.add_route(str(p.ip_interface.network), None)
 
+        # Apply user-defined static routes
+        for route in (dev.get("routes") or []):
+            prefix = route.get("prefix")
+            if not prefix:
+                continue
+            gateway = route.get("gateway")
+            gw_value = (gateway or "").strip()
+            try:
+                sim_device.add_route(prefix, gw_value or None)
+            except Exception:
+                continue
+
     # Connect ports according to links
     for link in links_state or []:
         sid = link.get("sourceDeviceId")
@@ -647,6 +659,7 @@ def Dashboard():
     export_text, set_export_text = use_state("")
     import_text, set_import_text = use_state("")
     link_counter, set_link_counter = use_state(0)
+    route_counter, set_route_counter = use_state(0)
     # connection UI state (for properties panel 'Create Connection')
     conn_src_port, set_conn_src_port = use_state(None)
     conn_tgt_device, set_conn_tgt_device = use_state(None)
@@ -671,7 +684,7 @@ def Dashboard():
     def seed_and_load_catalogue():
         try:
             # local import to avoid module-level Django dependency issues
-            from network.planning.models import DeviceModel
+            from planning.models import DeviceModel
             # seed
             if DeviceModel.objects.count() == 0:
                 for cat, items in DEVICE_CATALOGUE.items():
@@ -790,6 +803,7 @@ def Dashboard():
             "bridges": [],
             "vpns": [],
             "ipTunnels": [],
+            "routes": [],
         }
         set_devices(devices + [new_device])
 
@@ -912,6 +926,48 @@ def Dashboard():
         }
         services.append(new_service)
         set_devices(devices[:])  # re-render
+
+    def add_route_to_device(dev_id):
+        updated = []
+        for d in devices:
+            if d['id'] == dev_id:
+                routes = list(d.get('routes', []) or [])
+                rid = f"route-{route_counter}"
+                routes.append({
+                    'id': rid,
+                    'prefix': '',
+                    'gateway': '',
+                })
+                updated.append({**d, 'routes': routes})
+            else:
+                updated.append(d)
+        set_devices(updated)
+        set_route_counter(route_counter + 1)
+
+    def update_route_for_device(dev_id, route_id, updates):
+        updated = []
+        for d in devices:
+            if d['id'] == dev_id:
+                routes = []
+                for r in d.get('routes', []) or []:
+                    if r.get('id') == route_id:
+                        routes.append({**r, **updates})
+                    else:
+                        routes.append(r)
+                updated.append({**d, 'routes': routes})
+            else:
+                updated.append(d)
+        set_devices(updated)
+
+    def remove_route_from_device(dev_id, route_id):
+        updated = []
+        for d in devices:
+            if d['id'] == dev_id:
+                routes = [r for r in (d.get('routes', []) or []) if r.get('id') != route_id]
+                updated.append({**d, 'routes': routes})
+            else:
+                updated.append(d)
+        set_devices(updated)
 
     def on_toggle_link():
         s = dict(linking)
@@ -1123,6 +1179,16 @@ def Dashboard():
             nd = dict(d)
             nd['id'] = device_id
             nd['ports'] = ports
+            routes = []
+            for r_idx, route in enumerate((d.get('routes') or []), start=1):
+                rid = route.get('id') or f"route-{device_id}-{r_idx}"
+                routes.append({
+                    **route,
+                    'id': rid,
+                    'prefix': route.get('prefix', ''),
+                    'gateway': route.get('gateway', ''),
+                })
+            nd['routes'] = routes
             new_devices.append(nd)
 
         # update links to point to new port ids using the link's device context
@@ -1557,6 +1623,45 @@ def Dashboard():
             ]}),
             on_remove_service=lambda sid: remove_device_property(sel['id'], 'ipTunnels', sid)
         ))
+
+        # Static routes
+        route_entries = []
+        for route in sel.get('routes', []) or []:
+            rid = route.get('id')
+            route_entries.append(
+                html.div({"className": "route-entry", "style": {"marginBottom": "8px", "padding": "8px", "background": "#1b1b1b", "borderRadius": "6px"}},
+                         html.label({}, "Prefix"),
+                         html.input({
+                             "type": "text",
+                             "placeholder": "e.g., 0.0.0.0/0",
+                             "value": route.get('prefix', ''),
+                             "on_change": (lambda e, rid=rid: update_route_for_device(sel['id'], rid, {"prefix": e['target']['value']}))
+                         }),
+                         html.label({"style": {"marginTop": "6px"}}, "Gateway"),
+                         html.input({
+                             "type": "text",
+                             "placeholder": "leave blank for directly connected",
+                             "value": route.get('gateway', ''),
+                             "on_change": (lambda e, rid=rid: update_route_for_device(sel['id'], rid, {"gateway": e['target']['value']}))
+                         }),
+                         html.button({
+                             "className": "prop-button danger small",
+                             "style": {"marginTop": "6px"},
+                             "onClick": (lambda e, rid=rid: remove_route_from_device(sel['id'], rid))
+                         }, "Remove Route")
+                         )
+            )
+        if not route_entries:
+            route_entries.append(html.div({"style": {"marginBottom": "8px"}}, "No static routes defined."))
+
+        props.append(html.div({"className": "prop-group"},
+                              html.label({}, "Static Routes"),
+                              *route_entries,
+                              html.button({
+                                  "className": "prop-button info",
+                                  "onClick": lambda e: add_route_to_device(sel['id'])
+                              }, "Add Route")
+                              ))
 
         # Create Connection (properties panel helper)
         # Source port selector (from selected device)
