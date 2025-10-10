@@ -359,6 +359,7 @@ class Router(Device):
             target = simulator.find_device_by_ip(gw)
             if not target:
                 return {"type": "unreachable", "from": self.name, "trace": packet.get("trace", []) + [{"device": self.name, "action": "gw-not-found", "gateway": gw}]}
+            next_dev, next_port = target
             # forward to that device (simulate a hop)
             # apply SNAT rules on this router before forwarding
             orig_src = packet.get("src")
@@ -378,7 +379,12 @@ class Router(Device):
 
             # record hop
             packet.setdefault("trace", []).append({"device": self.name, "action": "forward", "via": "gateway", "gateway": gw})
-            return simulator.handle_packet(packet, self, ingress)
+
+            # When we forward via SNAT, the source IP may now be owned by this router;
+            # ensure the next hop sees a sensible ingress.
+            ingress_port = next_port
+            packet = {**packet, "path": packet.get("path", []) + [self.name]}
+            return next_dev.receive_packet(packet, ingress_port, simulator)
 
 
 class DummyTerminal(Device):
@@ -483,8 +489,10 @@ class NetworkSimulator:
         packet.setdefault("trace", [])
         # find source port for src_ip
         src_port = src_device.find_port_for_src(src_ip)
+        if not src_port and ingress and ingress in getattr(src_device, "ports", []):
+            src_port = ingress
+            packet.setdefault("trace", []).append({"device": src_device.name, "action": "assume-ingress-port", "src": src_ip, "port": ingress.id})
         if not src_port:
-            # If device doesn't own the src IP, fail
             packet.setdefault("trace", []).append({"device": src_device.name, "action": "error-src-not-on-device", "src": src_ip})
             return {"type": "error", "reason": "src-ip-not-on-device", "from": src_device.name, "trace": packet.get("trace", [])}
 
