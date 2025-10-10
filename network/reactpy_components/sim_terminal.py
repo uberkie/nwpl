@@ -2,12 +2,13 @@ from reactpy import component, html, hooks, use_state
 
 
 @component
-def SimTerminal(simulator=None, devices=None):
+def SimTerminal(simulator=None, devices=None, allow_config=True):
     """A minimal server-side terminal UI for the NetworkSimulator.
 
     Props:
     - simulator: NetworkSimulator instance (passed from server code)
     - devices: list of Device objects (simulator.devices)
+    - allow_config: whether to expose mutating controls (port add)
     """
     output, set_output = use_state([])
     cmd, set_cmd = use_state("")
@@ -98,6 +99,8 @@ def SimTerminal(simulator=None, devices=None):
         return []
 
     def add_port_to_device(e=None):
+        if not allow_config:
+            return
         if not simulator:
             append("No simulator provided to add a port")
             return
@@ -132,23 +135,30 @@ def SimTerminal(simulator=None, devices=None):
 
     # Render
     port_options = refresh_ports() or []
+    controls = [
+        # device selector
+        html.select({"value": selected, "on_change": lambda e: set_selected(e['target']['value'])},
+                    *([html.option({"value": d.name}, d.name) for d in (devices or [])])
+        ),
+        # port selector
+        html.select({"value": port_selected, "on_change": lambda e: set_port_selected(e['target']['value'])},
+                    *([html.option({"value": v}, label) for v, label in port_options])
+        ),
+        html.input({"type": "text", "value": cmd, "on_change": handle_input, "style": {"flex": "1"}}),
+        html.button({"onClick": run_command}, "Run"),
+    ]
+
+    if allow_config:
+        controls.extend([
+            html.input({"type": "text", "value": new_port_ip, "placeholder": "iftype:ip/prefix", "on_change": lambda e: set_new_port_ip(e['target']['value']), "style": {"width": "220px"}}),
+            html.button({"onClick": add_port_to_device}, "Add Port")
+        ])
+
     return html.div({"className": "sim-terminal", "style": {"display": "flex", "flexDirection": "column", "height": "100%"}},
                     html.div({"style": {"flex": "1", "overflowY": "auto", "background": "#111", "color": "#eee", "padding": "8px"}},
                              *[html.div({}, line) for line in output]
                     ),
                     html.div({"style": {"display": "flex", "gap": "8px", "padding": "8px", "alignItems": "center"}},
-                             # device selector
-                             html.select({"value": selected, "on_change": lambda e: set_selected(e['target']['value'])},
-                                         *([html.option({"value": d.name}, d.name) for d in (devices or [])])
-                             ),
-                             # port selector
-                             html.select({"value": port_selected, "on_change": lambda e: set_port_selected(e['target']['value'])},
-                                         *([html.option({"value": v}, label) for v, label in port_options])
-                             ),
-                             html.input({"type": "text", "value": cmd, "on_change": handle_input, "style": {"flex": "1"}}),
-                             html.button({"onClick": run_command}, "Run"),
-                             # add port input
-                             html.input({"type": "text", "value": new_port_ip, "placeholder": "iftype:ip/prefix", "on_change": lambda e: set_new_port_ip(e['target']['value']), "style": {"width": "220px"}}),
-                             html.button({"onClick": add_port_to_device}, "Add Port")
+                             *controls
                     )
                     )

@@ -14,7 +14,7 @@ Notes:
 
 from dataclasses import dataclass, field
 import ipaddress
-from nis import match
+
 from typing import List, Dict, Optional, Tuple
 from ipaddress import ip_network
 from typing import Union
@@ -57,7 +57,8 @@ class Bridge:
             self.ports.append(port)
         if port.ip_interface:
             ip = port.ip_interface.ip
-            self.l2_table[ip] = port
+            # store learned addresses as strings for consistent lookup
+            self.l2_table[str(ip)] = port
 
     def disconnect(self, port: "Port"):
         """Disconnect a port from the bridge."""
@@ -65,14 +66,19 @@ class Bridge:
             self.ports.remove(port)
         if port.ip_interface:
             ip = port.ip_interface.ip
-            self.l2_table.pop(ip, None)
+            self.l2_table.pop(str(ip), None)
         port.bridge = None
 
     def forward(self, src_ip: str, dst_ip: str, vlan: Optional[int] = None):
         """Forward packet based on learned IP→Port mapping."""
-        dst_ip = ipaddress.ip_address(dst_ip)
-        if dst_ip in self.l2_table:
-            return self.l2_table[dst_ip].device  # return destination device
+        # normalize the lookup key to string to match learned entries
+        try:
+            dst_addr = ipaddress.ip_address(dst_ip)
+            key = str(dst_addr)
+        except Exception:
+            key = str(dst_ip)
+        if key in self.l2_table:
+            return self.l2_table[key].device  # return destination device
         return None  # destination not found
 
 
@@ -198,6 +204,35 @@ class Device:
                 continue
         return packet
 
+    def ping(self, src_ip: str, dst_ip: str, simulator: "NetworkSimulator", ttl: int = 64) -> Tuple[bool, List[str]]:
+        pkt = {"type": "icmp-echo", "src": src_ip, "dst": dst_ip, "ttl": ttl}
+        pkt = self.apply_snat(pkt)
+        res = simulator.handle_packet(pkt, self, None)
+        success = False
+        trace = []
+        if isinstance(res, dict):
+            if res.get("type") in ("icmp-reply",):
+                success = True
+            trace = res.get("trace", [])
+        return success, trace
+
+    def traceroute(self, src_ip: str, dst_ip: str, simulator: "NetworkSimulator", max_hops: int = 30) -> List[str]:
+        path = []
+        for ttl in range(1, max_hops + 1):
+            pkt = {"type": "icmp-echo", "src": src_ip, "dst": dst_ip, "ttl": ttl}
+            pkt = self.apply_snat(pkt)
+            res = simulator.handle_packet(pkt, self, None)
+            if isinstance(res, dict):
+                if res.get("type") == "icmp-reply":
+                    path.extend(res.get("trace", []))
+                    break
+                elif res.get("type") == "icmp-time-exceeded":
+                    path.extend(res.get("trace", []))
+                elif res.get("type") == "unreachable":
+                    path.extend(res.get("trace", []))
+                    break
+        return path
+
 
 class Router(Device):
     def __init__(self, name: str):
@@ -231,6 +266,14 @@ class Router(Device):
         orig_dst = dst
         if not orig_dst:
             return {"type": "error", "reason": "no-dst", "from": self.name, "trace": packet.get("trace", [])}
+
+        # If the packet is destined to one of our own addresses, consume it here
+        try:
+            if dst and self.find_port_for_src(dst):
+                packet.setdefault("trace", []).append({"device": self.name, "action": "deliver"})
+                return packet
+        except Exception:
+            pass
 
         # If this packet is a reply intended for a previously SNATed flow, reverse-translate
         for m in list(self.nat_table):
@@ -313,38 +356,6 @@ class DummyTerminal(Device):
     def __init__(self, name: str):
         super().__init__(name)
 
-    def ping(self, src_ip: str, dst_ip: str, simulator: "NetworkSimulator", ttl: int = 64) -> Tuple[bool, List[str]]:
-        pkt = {"type": "icmp-echo", "src": src_ip, "dst": dst_ip, "ttl": ttl}
-        # Apply SNAT on source device before sending
-        pkt = self.apply_snat(pkt)
-        res = simulator.handle_packet(pkt, self, None)
-        # res can be response dict or None
-        success = False
-        trace = []
-        if isinstance(res, dict):
-            if res.get("type") in ("icmp-reply",):
-                success = True
-            trace = res.get("trace", [])
-        return success, trace
-
-    def traceroute(self, src_ip: str, dst_ip: str, simulator: "NetworkSimulator", max_hops: int = 30) -> List[str]:
-        path = []
-        for ttl in range(1, max_hops + 1):
-            pkt = {"type": "icmp-echo", "src": src_ip, "dst": dst_ip, "ttl": ttl}
-            pkt = self.apply_snat(pkt)
-            res = simulator.handle_packet(pkt, self, None)
-            if isinstance(res, dict):
-                # If it's an icmp-reply, append source and stop
-                if res.get("type") == "icmp-reply":
-                    path.extend(res.get("trace", []))
-                    break
-                elif res.get("type") == "icmp-time-exceeded":
-                    path.extend(res.get("trace", []))
-                elif res.get("type") == "unreachable":
-                    path.extend(res.get("trace", []))
-                    break
-        return path
-
 
 class NetworkSimulator:
     def __init__(self):
@@ -372,8 +383,20 @@ class NetworkSimulator:
         if out_port.bridge is None:
             return {"type": "unreachable", "from": src_device.name, "trace": packet.get("trace", []) + [{"device": src_device.name, "action": "no-bridge"}]}
         dst_ip = packet["dst"]
-        # try to find destination port on the bridge
-        for p in out_port.bridge.ports:
+        bridge = out_port.bridge
+        # try learned L2 table first to prioritize known destination
+        ports_to_check = list(bridge.ports)
+        try:
+            lookup_key = str(ipaddress.ip_address(dst_ip))
+        except Exception:
+            lookup_key = str(dst_ip)
+        learned_port = bridge.l2_table.get(lookup_key)
+        if learned_port and learned_port in bridge.ports and learned_port is not out_port:
+            # ensure VLAN compatibility when bridge is VLAN aware
+            if not bridge.vlan_aware or learned_port.vlan == out_port.vlan:
+                ports_to_check = [learned_port] + [p for p in bridge.ports if p is not learned_port]
+
+        for p in ports_to_check:
             if p is out_port:
                 continue
             # record that we're checking this bridge port
@@ -398,6 +421,9 @@ class NetworkSimulator:
                 if resp is None:
                     # If destination is terminal and handles ping by replying
                     # Build reply packet manually
+                    if pkt2.get("type") == "icmp-reply":
+                        pkt2.setdefault("trace", []).append({"device": dest_dev.name, "action": "deliver"})
+                        return pkt2
                     if packet.get("type") == "icmp-echo":
                         # normalize reply addresses to strings
                         reply_src = str(dst_ip)

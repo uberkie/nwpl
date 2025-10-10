@@ -41,7 +41,7 @@ def DeviceCatalogue(on_add_device=None):
     # ensure there's a Terminal category in the fallback
     try:
         if isinstance(data, dict) and "Terminal" not in data:
-            data = {**data, "Terminal": [{"type": "terminal", "model": "sim-terminal", "ports": 0, "display": "Simulator Terminal"}]}
+            data = {**data, "Terminal": [{"type": "terminal", "model": "sim-terminal", "ports": 1, "display": "Simulator Terminal"}]}
     except Exception:
         pass
 

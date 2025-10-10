@@ -4,40 +4,140 @@ from reactpy_components.sim_terminal import SimTerminal
 from reactpy_components.network_simulator import NetworkSimulator, DummyTerminal, Router
 
 # Demo singleton simulator for the UI
-_demo_simulator = NetworkSimulator()
+_demo_simulator = None
+
+
 def _build_demo_sim():
-    sim = _demo_simulator
-    # only build once
-    if sim.devices:
-        return sim
-    # create two terminals and a router like the CLI demo
-    a = DummyTerminal('a')
-    a.add_port('p1', '192.0.2.2/24')
-    sim.add_device(a)
-    r = Router('r1')
-    r.add_port('rp1', '192.0.2.1/24')
-    r.add_port('rp2', '203.0.113.1/24')
-    sim.add_device(r)
-    b = DummyTerminal('b')
-    b.add_port('p1', '203.0.113.5/24')
-    sim.add_device(b)
-    br1 = sim.add_bridge('br1')
-    br2 = sim.add_bridge('br2')
-    # connect
-    br1.connect(a.ports[0])
-    br1.connect(r.ports[0])
-    br2.connect(r.ports[1])
-    br2.connect(b.ports[0])
-    # routing & NAT
-    r.add_route('0.0.0.0/0', None)
-    r.add_nat('dnat', '203.0.113.5', '192.0.2.2')
-    r.add_nat('snat', '192.0.2.2', '203.0.113.1')
+    """Create (once) a small routed + NATed topology for the sidebar terminal."""
+    global _demo_simulator
+    if _demo_simulator is not None:
+        return _demo_simulator
+
+    sim = NetworkSimulator()
+
+    # LAN host
+    host_a = DummyTerminal('host-a')
+    a_eth0 = host_a.add_port('eth0', '192.0.2.2/24')
+    sim.add_device(host_a)
+
+    # WAN host
+    host_b = DummyTerminal('host-b')
+    b_eth0 = host_b.add_port('eth0', '203.0.113.5/24')
+    sim.add_device(host_b)
+
+    # Router between LAN and WAN
+    router = Router('edge-router')
+    r_lan = router.add_port('lan', '192.0.2.1/24')
+    r_wan = router.add_port('wan', '203.0.113.1/24')
+    # default route lets the router try directly connected networks first
+    router.add_route('0.0.0.0/0', None)
+    # NAT so replies traverse correctly when host-b talks back
+    router.add_nat('dnat', '203.0.113.5', '192.0.2.2')
+    router.add_nat('snat', '192.0.2.2', '203.0.113.1')
+    sim.add_device(router)
+
+    # Layer-2 domains (LAN + WAN)
+    br_lan = sim.add_bridge('lan')
+    br_wan = sim.add_bridge('wan')
+    br_lan.connect(a_eth0)
+    br_lan.connect(r_lan)
+    br_wan.connect(r_wan)
+    br_wan.connect(b_eth0)
+
+    _demo_simulator = sim
     return sim
 
-import asyncio
+
+def build_simulator_from_topology(devices_state, links_state):
+    """Build a NetworkSimulator that mirrors the dashboard's current topology."""
+    if not devices_state:
+        return None, []
+
+    sim = NetworkSimulator()
+    port_lookup = {}
+    port_metadata = {}
+    name_counts = {}
+
+    def _unique_name(base):
+        base = base or "Device"
+        count = name_counts.get(base, 0)
+        name_counts[base] = count + 1
+        if count == 0:
+            return base
+        return f"{base}-{count+1}"
+
+    router_types = {"router", "firewall", "l3 switch", "l3-switch"}
+
+    # Instantiate devices and their ports
+    for dev in devices_state:
+        dev_id = dev.get("id") or _unique_name("device")
+        display_name = _unique_name(dev.get("name") or dev_id)
+        device_type = (dev.get("type") or "").lower()
+        dev_cls = Router if device_type in router_types else DummyTerminal
+        sim_device = dev_cls(display_name)
+        sim.add_device(sim_device)
+
+        ports = dev.get("ports", [])
+        for idx, port in enumerate(ports, start=1):
+            port_id = port.get("id") or f"{dev_id}-p{idx}"
+            ip_with_prefix = None
+            for ip_candidate in port.get("ips", []):
+                if not ip_candidate:
+                    continue
+                ip_with_prefix = ip_candidate if "/" in ip_candidate else f"{ip_candidate}/32"
+                break
+            port_obj = sim_device.add_port(port_id, ip_with_prefix)
+            port_obj.iftype = port.get("iftype") or "ethernet"
+            port_lookup[(dev_id, port_id)] = port_obj
+            port_metadata[(dev_id, port_id)] = {
+                "bridge": port.get("bridge")
+            }
+
+        # Auto-populate connected routes for routers
+        if isinstance(sim_device, Router):
+            for p in sim_device.ports:
+                if p.ip_interface:
+                    sim_device.add_route(str(p.ip_interface.network), None)
+
+    # Connect ports according to links
+    for link in links_state or []:
+        sid = link.get("sourceDeviceId")
+        s_port_id = link.get("sourcePortId")
+        tid = link.get("targetDeviceId")
+        t_port_id = link.get("targetPortId")
+        if not (sid and s_port_id and tid and t_port_id):
+            continue
+        src_port = port_lookup.get((sid, s_port_id))
+        tgt_port = port_lookup.get((tid, t_port_id))
+        if not src_port or not tgt_port:
+            continue
+
+        src_meta = port_metadata.get((sid, s_port_id), {})
+        tgt_meta = port_metadata.get((tid, t_port_id), {})
+
+        bridge_token = None
+        if src_meta.get("bridge") and tgt_meta.get("bridge") and src_meta["bridge"] == tgt_meta["bridge"]:
+            bridge_token = src_meta["bridge"]
+        elif src_meta.get("bridge"):
+            bridge_token = src_meta["bridge"]
+        elif tgt_meta.get("bridge"):
+            bridge_token = tgt_meta["bridge"]
+        else:
+            bridge_token = link.get("id") or f"{sid}-{s_port_id}-{tid}-{t_port_id}"
+        bridge_name = f"bridge::{bridge_token}"
+        bridge = sim.bridges.get(bridge_name)
+        if not bridge:
+            bridge = sim.add_bridge(bridge_name)
+
+        for port in (src_port, tgt_port):
+            if port.bridge and port.bridge is not bridge:
+                port.bridge.disconnect(port)
+            bridge.connect(port)
+
+    return sim, list(sim.devices)
 
 @component
-def Sidebar(on_add_device=None, on_toggle_link=None, linking_active=False, catalogue=None):
+def Sidebar(on_add_device=None, on_toggle_link=None, linking_active=False, catalogue=None, simulator=None, sim_devices=None):
     # Sidebar now accepts callbacks from Dashboard so actions are server-driven
     # link filter state (controlled checkboxes)
     link_types = [
@@ -68,6 +168,9 @@ def Sidebar(on_add_device=None, on_toggle_link=None, linking_active=False, catal
         except Exception:
             return False
 
+    active_simulator = simulator or _build_demo_sim()
+    active_devices = sim_devices or (active_simulator.devices if active_simulator else [])
+
     return html.div(
         {"className": "sidebar", "style": {"overflowY": "auto", "maxHeight": "100vh"}},  # Added scroll
 
@@ -77,7 +180,11 @@ def Sidebar(on_add_device=None, on_toggle_link=None, linking_active=False, catal
                  # Small terminal panel mounted under the catalogue
                  html.details({"open": False, "className": "terminal-panel"},
                               html.summary("Simulator Terminal"),
-                              SimTerminal(simulator=_build_demo_sim(), devices=_build_demo_sim().devices)
+                              SimTerminal(
+                                  simulator=active_simulator,
+                                  devices=active_devices,
+                                  allow_config=simulator is None
+                              )
                  ),
                  html.hr(),
                  html.h3({}, "Device Filters"),
@@ -575,10 +682,14 @@ def Dashboard():
             qs = DeviceModel.objects.all().order_by('category', 'display')
             grouped = {}
             for m in qs:
+                dev_type = (m.type or '').strip().lower()
+                port_count = m.ports if m.ports is not None else 0
+                if port_count <= 0 and dev_type in {'terminal', 'host', 'client', 'workstation'}:
+                    port_count = 1
                 grouped.setdefault(m.category or 'Other', []).append({
                     'type': m.type,
                     'model': m.model,
-                    'ports': m.ports,
+                    'ports': port_count,
                     'display': m.display
                 })
             set_catalogue_state(grouped)
@@ -601,7 +712,9 @@ def Dashboard():
         'ONT': 'fibre',
         'Fibre': 'fibre',
         'NVR': 'ethernet',
-        'DVR': 'ethernet'
+        'DVR': 'ethernet',
+        'Terminal': 'ethernet',
+        'terminal': 'ethernet',
     }
 
     # Compatibility matrix for interface types -> allowed link types
@@ -613,6 +726,8 @@ def Dashboard():
         ('ethernet', 'wireless'): ['Wireless'],
         ('ethernet', 'wan'): ['VPN', 'IP-IP Tunnel', 'IP Sec Tunnel', 'Routed'],
     }
+
+    simulator_instance, simulator_devices = build_simulator_from_topology(devices, links)
 
     def get_port_iftype(device_item, port):
         if not port:
@@ -644,9 +759,10 @@ def Dashboard():
         dev_iftype = item.get('port_iftype') or default_port_iftype.get(item.get('type'), 'ethernet')
         device_id = f"dev{len(devices) + 1}"
         if isinstance(ports, int):
+            port_count = ports if ports and ports > 0 else 1
             ports_list = [
                 {"id": f"port-{device_id}-{i}", "name": f"ether{i}", "ips": [], "vlans": [], "bridge": None, 'iftype': dev_iftype}
-                for i in range(1, ports + 1)
+                for i in range(1, port_count + 1)
             ]
         elif isinstance(ports, list):
             ports_list = []
@@ -660,6 +776,9 @@ def Dashboard():
                 else:
                     entry = {"id": f"port-{device_id}-{i}", "name": str(p), "ips": [], "vlans": [], "bridge": None, 'iftype': dev_iftype}
                 ports_list.append(entry)
+
+        if not ports_list:
+            ports_list = [{"id": f"port-{device_id}-1", "name": "ether1", "ips": [], "vlans": [], "bridge": None, 'iftype': dev_iftype}]
 
         new_device = {
             "id": device_id,
@@ -976,9 +1095,20 @@ def Dashboard():
         new_devices = []
         for d_idx, d in enumerate(devs):
             device_id = d.get('id') or f"dev{d_idx+1}"
+            raw_ports = list(d.get('ports', []) or [])
+            if not raw_ports:
+                dev_iftype = default_port_iftype.get(d.get('type'), 'ethernet')
+                raw_ports = [{
+                    "id": f"port-{device_id}-1",
+                    "name": "ether1",
+                    "ips": [],
+                    "vlans": [],
+                    "bridge": None,
+                    "iftype": dev_iftype,
+                }]
             ports = []
             id_map.setdefault(device_id, {})
-            for idx, p in enumerate(d.get('ports', []), start=1):
+            for idx, p in enumerate(raw_ports, start=1):
                 old_id = p.get('id')
                 # if the port id doesn't include the device id, remap it to a device-scoped id
                 if not old_id or str(device_id) not in str(old_id):
@@ -1045,7 +1175,14 @@ def Dashboard():
                                    "onClick": lambda e: set_show_export(not show_export)}, "Toggle Export/Import"))
 
     # toolbar/sidebar
-    sidebar = Sidebar(on_add_device=add_device, on_toggle_link=on_toggle_link, linking_active=linking['active'], catalogue=catalogue_state)
+    sidebar = Sidebar(
+        on_add_device=add_device,
+        on_toggle_link=on_toggle_link,
+        linking_active=linking['active'],
+        catalogue=catalogue_state,
+        simulator=simulator_instance,
+        sim_devices=simulator_devices,
+    )
 
     # canvas
     svg_children = []
