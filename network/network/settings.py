@@ -68,7 +68,17 @@ TEMPLATES = [
     },
 ]
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
+
 ASGI_APPLICATION = 'network.asgi.application'
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

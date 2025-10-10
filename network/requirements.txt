@@ -3,3 +3,4 @@ reactpy-django
 daphne
 channels
 sqlite3
+channels_redis

@@ -39,7 +39,7 @@ def Sidebar(on_add_device=None, on_toggle_link=None, linking_active=False, catal
 
         html.div({"className": "toolbar"},
                  html.h3({}, "Device Catalogue"),
-                 html.div({"className": "device-catalogue"}, DeviceCatalogue(catalogue, on_add_device)),
+                 html.div({"className": "device-catalogue"}, DeviceCatalogue(catalogue=catalogue, on_add_device=on_add_device)),
                  html.hr(),
                  html.h3({}, "Device Filters"),
                  html.div({"id": "device-filter-group", "className": "filter-group"}),
