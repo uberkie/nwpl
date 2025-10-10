@@ -38,6 +38,12 @@ def DeviceCategory(category_name, devices, on_add_device=None):
 def DeviceCatalogue(on_add_device=None):
     # data state holds a mapping: category -> list[device dict]
     data, set_data = hooks.use_state(DEVICE_CATALOGUE)
+    # ensure there's a Terminal category in the fallback
+    try:
+        if isinstance(data, dict) and "Terminal" not in data:
+            data = {**data, "Terminal": [{"type": "terminal", "model": "sim-terminal", "ports": 0, "display": "Simulator Terminal"}]}
+    except Exception:
+        pass
 
     async def load_from_db():
         """Load DeviceModel rows in a thread and update component state."""

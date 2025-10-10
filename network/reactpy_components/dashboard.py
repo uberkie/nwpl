@@ -1,5 +1,39 @@
 from reactpy import component, html, svg, hooks, use_state, event
 from reactpy_components.device_catalogue import DEVICE_CATALOGUE, DeviceCatalogue as RemoteDeviceCatalogue
+from reactpy_components.sim_terminal import SimTerminal
+from reactpy_components.network_simulator import NetworkSimulator, DummyTerminal, Router
+
+# Demo singleton simulator for the UI
+_demo_simulator = NetworkSimulator()
+def _build_demo_sim():
+    sim = _demo_simulator
+    # only build once
+    if sim.devices:
+        return sim
+    # create two terminals and a router like the CLI demo
+    a = DummyTerminal('a')
+    a.add_port('p1', '192.0.2.2/24')
+    sim.add_device(a)
+    r = Router('r1')
+    r.add_port('rp1', '192.0.2.1/24')
+    r.add_port('rp2', '203.0.113.1/24')
+    sim.add_device(r)
+    b = DummyTerminal('b')
+    b.add_port('p1', '203.0.113.5/24')
+    sim.add_device(b)
+    br1 = sim.add_bridge('br1')
+    br2 = sim.add_bridge('br2')
+    # connect
+    br1.connect(a.ports[0])
+    br1.connect(r.ports[0])
+    br2.connect(r.ports[1])
+    br2.connect(b.ports[0])
+    # routing & NAT
+    r.add_route('0.0.0.0/0', None)
+    r.add_nat('dnat', '203.0.113.5', '192.0.2.2')
+    r.add_nat('snat', '192.0.2.2', '203.0.113.1')
+    return sim
+
 import asyncio
 
 @component
@@ -40,6 +74,11 @@ def Sidebar(on_add_device=None, on_toggle_link=None, linking_active=False, catal
         html.div({"className": "toolbar"},
                  html.h3({}, "Device Catalogue"),
                  html.div({"className": "device-catalogue"}, RemoteDeviceCatalogue(on_add_device=on_add_device)),
+                 # Small terminal panel mounted under the catalogue
+                 html.details({"open": False, "className": "terminal-panel"},
+                              html.summary("Simulator Terminal"),
+                              SimTerminal(simulator=_build_demo_sim(), devices=_build_demo_sim().devices)
+                 ),
                  html.hr(),
                  html.h3({}, "Device Filters"),
                  html.div({"id": "device-filter-group", "className": "filter-group"}),
