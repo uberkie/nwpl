@@ -14,7 +14,10 @@ Notes:
 
 from dataclasses import dataclass, field
 import ipaddress
+from nis import match
 from typing import List, Dict, Optional, Tuple
+from ipaddress import ip_network
+from typing import Union
 
 
 @dataclass
@@ -27,27 +30,50 @@ class Port:
     iftype: str = "ethernet"
 
     def has_ip(self, ip: str) -> bool:
+        """Return True if this port has the specified IP."""
         if not self.ip_interface:
             return False
-        return ipaddress.ip_address(ip) == self.ip_interface.ip
+        try:
+            candidate = (
+                ip if isinstance(ip, ipaddress.IPv4Address)
+                else ipaddress.IPv4Address(str(ip))
+            )
+        except Exception:
+            return False
+        return candidate == self.ip_interface.ip
 
 
 @dataclass
 class Bridge:
     name: str
-    ports: List[Port] = field(default_factory=list)
-    # optional VLAN-aware bridge: if True, ports' vlan attribute is used to isolate traffic
     vlan_aware: bool = False
+    ports: List["Port"] = field(default_factory=list)
+    l2_table: Dict[ipaddress.IPv4Address, "Port"] = field(default_factory=dict)
 
-    def connect(self, port: Port):
+    def connect(self, port: "Port"):
+        """Connect a port to the bridge and learn its IP."""
         port.bridge = self
         if port not in self.ports:
             self.ports.append(port)
+        if port.ip_interface:
+            ip = port.ip_interface.ip
+            self.l2_table[ip] = port
 
-    def disconnect(self, port: Port):
+    def disconnect(self, port: "Port"):
+        """Disconnect a port from the bridge."""
         if port in self.ports:
             self.ports.remove(port)
+        if port.ip_interface:
+            ip = port.ip_interface.ip
+            self.l2_table.pop(ip, None)
         port.bridge = None
+
+    def forward(self, src_ip: str, dst_ip: str, vlan: Optional[int] = None):
+        """Forward packet based on learned IP→Port mapping."""
+        dst_ip = ipaddress.ip_address(dst_ip)
+        if dst_ip in self.l2_table:
+            return self.l2_table[dst_ip].device  # return destination device
+        return None  # destination not found
 
 
 class Device:
@@ -69,9 +95,11 @@ class Device:
     def set_port_vlan(self, port: Port, vlan: Optional[int]):
         port.vlan = vlan
 
-    def add_route(self, network: str, gateway: Optional[str] = None):
-        self.routes.append({"network": ipaddress.IPv4Network(network), "gateway": gateway})
-
+    def add_route(self, network: str, gateway: Union[str, 'Port', None] = None):
+        self.routes.append({
+            "network": ip_network(network),
+            "gateway": gateway,
+        })
     def add_nat(self, nat_type: str, match: str, to: str):
         """Add a simple static NAT rule.
 
@@ -80,7 +108,15 @@ class Device:
         to: replacement IP string
         """
         # store raw strings; matching will parse
-        self.nat_rules.append({"type": nat_type, "match": match, "to": to})
+        parsed = None
+        if '/' in match:
+            parsed = ipaddress.IPv4Network(match)
+        else:
+            try:
+                parsed = ipaddress.IPv4Address(match)
+            except Exception:
+                parsed = match  # leave as raw string
+        self.nat_rules.append({"type": nat_type, "match": parsed, "to": to})
 
     def find_port_for_src(self, src_ip: str) -> Optional[Port]:
         for p in self.ports:
@@ -116,18 +152,22 @@ class Device:
             try:
                 # match against src or network
                 m = r.get("match")
-                if isinstance(m, str) and '/' in m:
-                    net = ipaddress.IPv4Network(m)
-                    if ipaddress.IPv4Address(packet.get("src")) in net:
+                if isinstance(m, ipaddress.IPv4Network):
+                    if ipaddress.IPv4Address(packet.get("src")) in m:
                         old = packet.get("src")
-                        packet = {**packet, "src": r.get("to")}
+                        packet = {**packet, "src": str(r.get("to"))}
                         # record trace
                         packet.setdefault("trace", []).append({"device": self.name, "action": "snat", "from": old, "to": r.get("to")})
                         break
+                elif isinstance(m, ipaddress.IPv4Address):
+                    if packet.get("src") == str(m):
+                        old = packet.get("src")
+                        packet = {**packet, "src": str(r.get("to"))}
+                        packet.setdefault("trace", []).append({"device": self.name, "action": "snat", "from": old, "to": r.get("to")})
                 else:
                     if packet.get("src") == m:
                         old = packet.get("src")
-                        packet = {**packet, "src": r.get("to")}
+                        packet = {**packet, "src": str(r.get("to"))}
                         packet.setdefault("trace", []).append({"device": self.name, "action": "snat", "from": old, "to": r.get("to")})
                         break
             except Exception:
@@ -145,13 +185,13 @@ class Device:
                     net = ipaddress.IPv4Network(m)
                     if ipaddress.IPv4Address(packet.get("dst")) in net:
                         old = packet.get("dst")
-                        packet = {**packet, "dst": r.get("to")}
+                        packet = {**packet, "dst": str(r.get("to"))}
                         packet.setdefault("trace", []).append({"device": self.name, "action": "dnat", "from": old, "to": r.get("to")})
                         break
                 else:
                     if packet.get("dst") == m:
                         old = packet.get("dst")
-                        packet = {**packet, "dst": r.get("to")}
+                        packet = {**packet, "dst": str(r.get("to"))}
                         packet.setdefault("trace", []).append({"device": self.name, "action": "dnat", "from": old, "to": r.get("to")})
                         break
             except Exception:
@@ -359,13 +399,21 @@ class NetworkSimulator:
                     # If destination is terminal and handles ping by replying
                     # Build reply packet manually
                     if packet.get("type") == "icmp-echo":
-                        reply = {"type": "icmp-reply", "src": dst_ip, "dst": packet["src"], "path": packet_path + [dest_dev.name], "trace": packet.get("trace", []) + [{"device": dest_dev.name, "action": "reply"}]}
-                        # simulate return path: attempt to deliver reply back to source via L2
-                        # find source device/port by src IP
+                        # normalize reply addresses to strings
+                        reply_src = str(dst_ip)
+                        reply_dst = str(packet["src"])
+                        reply = {
+                            "type": "icmp-reply",
+                            "src": reply_src,
+                            "dst": reply_dst,
+                            "path": packet_path + [dest_dev.name],
+                            "trace": packet.get("trace", []) + [{"device": dest_dev.name, "action": "reply"}]
+                        }
+                        # route the reply through the simulator (use ingress=None to let handle_packet re-resolve)
                         src_match = self.find_device_by_ip(packet["src"])
                         if src_match:
-                            sdev, sport = src_match
-                            return reply
+                            # dest_dev is replying host, pass ingress=None so handle_packet looks up ports as normal
+                            return self.handle_packet(reply, dest_dev, None)
                         else:
                             return None
                 else:
