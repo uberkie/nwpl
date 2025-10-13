@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ['192.168.30.72', '192.168.30.218', '127.0.0.1']
 
 INSTALLED_APPS = [
     'daphne',
+    "channels",
     'planning',
     'django.contrib.admin',
     'django.contrib.auth',
