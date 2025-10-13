@@ -113,5 +113,6 @@ Further Reading
     :caption: API Reference
 
     modules
+   changelog
 
 
