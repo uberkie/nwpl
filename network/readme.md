@@ -18,6 +18,53 @@ An interactive, server-driven network planning dashboard built with Django and R
 - SQLite (bundled) or another Django-supported database if you plan to swap backends
 - Node.js **NOT** required (ReactPy renders server-side)
 
+Recommended additional services and packages (used by the development server and Channels):
+
+- Redis (for Django Channels channel layer)
+- Daphne (ASGI server) and Channels (Django Channels package)
+
+Quick install and verification (Linux / macOS):
+
+- Install Redis (Debian/Ubuntu):
+
+```bash
+sudo apt update
+sudo apt install -y redis-server
+sudo systemctl enable --now redis.service
+redis-cli ping  # should reply PONG
+```
+
+- Install Redis (macOS via Homebrew):
+
+```bash
+brew update
+brew install redis
+brew services start redis
+redis-cli ping
+```
+
+- Install Daphne and Channels inside your Python virtualenv:
+
+```bash
+pip install daphne channels channels_redis
+```
+
+- (Optional) Run the development server with Daphne instead of Django's runserver:
+
+```bash
+# Example: run daphne on port 8000
+daphne -b 127.0.0.1 -p 8000 network.asgi:application
+```
+
+Docker option (quick local redis + daphne):
+
+```bash
+# Start Redis with Docker
+docker run -d --name redis -p 6379:6379 redis:7-alpine
+
+# Run Daphne in your container or locally pointed at Redis inside the docker network
+```
+
 ## 🔧 Setup & Basic Usage
 
 1. **Clone & create a virtual environment**
