@@ -130,6 +130,25 @@ docker run -d --name redis -p 6379:6379 redis:7-alpine
 - Real-time simulator terminal (ping & traceroute) powered by the in-project `NetworkSimulator`
 - Basic NAT and routing support within the simulator (SNAT/DNAT, longest-prefix routing, bridge learning)
 
+7. **Running Production**
+-  Create the following file to run daphne as a service
+
+	```bash
+	sudo nano /etc/systemd/system/myproject.daphne.service
+	[Unit]
+	Description=daphne daemon for my project
+	After=network.target
+
+	[Service]
+	User=aj
+	WorkingDirectory=/path/to/project
+	ExecStart=/path/to/project/.venv/bin/daphne -b 0.0.0.0 -p 8000 network.asgi:application
+	Restart=on-failure
+
+	[Install]
+	WantedBy=multi-user.target
+	```
+
 ## 🛣️ Toward Production Readiness (Todo List)
 
 - [ ] Persist diagram states per user/project instead of in-memory ReactPy state
